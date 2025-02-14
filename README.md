@@ -1,24 +1,52 @@
-# README
+# DragonVerifier 🐉
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Attendance tracking application with Canvas LMS integration.
 
-Things you may want to cover:
+## Getting Started
 
-* Ruby version
+This repository is split up into the two halves, frontend and backend, named `client` and `server` respectively. The frontend is a Next.js application with React and MUI, and the backend is a Node.js application with Express and Prism. They communicate with each other through a REST API.
 
-* System dependencies
+For development, you will need to run both the frontend and backend servers. The frontend server runs on port 3000, and the backend server runs on port 3001.
 
-* Configuration
+### Prerequisites
 
-* Database creation
+- Git (duh)
+- Node.js
+- npm
 
-* Database initialization
+### Installation
 
-* How to run the test suite
+1. Clone the repository
+   ```sh
+   git clone
+    ```
+2. Install NPM packages for both the client and server, and the root directory
+    ```sh
+    npm install
+    cd client
+    npm install
+    cd ../server
+    npm install
+    ```
+3. Create a `.env` file in the `server` directory with the following contents:
+    ```env
+    TBD
+    ```
 
-* Services (job queues, cache servers, search engines, etc.)
+### Running the Application
 
-* Deployment instructions
+Since the frontend and backend are separate applications, they will run independently of each other. Utilize `concurrently` to run both servers at the same time.
 
-* ...
+```sh
+npm run dev
+```
+
+This will start both the frontend and backend servers. The frontend server will run on port 3000, and the backend server will run on port 3001.
+
+## Contributing
+
+TBD
+
+## License
+
+MIT License
