@@ -17,6 +17,11 @@
     "dev": "concurrently --names 'C,S' -c 'green,yellow' \"cd client && npm run dev\" \"cd server && npm start\""
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^9.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.4.1"
   }
 }
