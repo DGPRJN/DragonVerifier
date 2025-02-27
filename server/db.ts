@@ -1,23 +1,26 @@
-import mongoose from "mongoose";
+import { PrismaClient } from "@prisma/client";
 import dotenv from "dotenv";
 
 dotenv.config(); // Load .env variables
 
-const DATABASE_URL = process.env.DATABASE_URL as string;
+const DATABASE_URL = process.env.DATABASE_URL;
 
 if (!DATABASE_URL) {
   console.error("DATABASE_URL is missing in .env");
   process.exit(1);
 }
 
+// Initialize Prisma Client
+const prisma = new PrismaClient();
+
 const connectDB = async () => {
   try {
-    await mongoose.connect(DATABASE_URL);
-    console.log("Connected to MongoDB Cloud");
+    await prisma.$connect();
+    console.log("Connected to MongoDB Cloud via Prisma");
   } catch (error) {
     console.error("MongoDB connection error:", error);
     process.exit(1);
   }
 };
 
-export default connectDB;
+export { prisma, connectDB };

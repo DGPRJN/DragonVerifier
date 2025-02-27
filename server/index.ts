@@ -1,5 +1,5 @@
 import express from "express";
-import connectDB from "./db.js"; // Import the database connection
+import {prisma, connectDB} from "./db.js"; // Import the database connection
 
 const app = express();
 const port = 3001;

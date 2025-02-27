@@ -22,11 +22,8 @@ For development, you will need to run both the frontend and backend servers. The
     - Click "Add a new database user"
     - Create a username and password (important that you save these for later)
     - Change role to "Atlas Admin" and then select "Add User"
-This will allow you to access and edit the database. To view the database from a terminal, copy and paste the following command: 
-```sh
-mongosh "mongodb+srv://<your_username>:<your_password>@attendance-db.j3wq2.mongodb.net/?retryWrites=true&w=majority&appName=attendance-db"
-```
-Replace <your_username> and <your_password> with the username and password for the user you created on MongoDB Atlas
+
+This will allow you to access and edit the database.
 
 ### Installation
 
