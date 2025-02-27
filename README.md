@@ -13,6 +13,20 @@ For development, you will need to run both the frontend and backend servers. The
 - Git (duh)
 - Node.js
 - npm
+- MongoDB Atlas
+
+### MongoDB Atlas Setup
+ 1. Create an account at https://www.mongodb.com/cloud/atlas/register 
+ 2. Once you have created an account and are invited to the project, create a project user for yourself:
+    - Click on "Database Access" in the sidebar
+    - Click "Add a new database user"
+    - Create a username and password (important that you save these for later)
+    - Change role to "Atlas Admin" and then select "Add User"
+This will allow you to access and edit the database. To view the database from a terminal, copy and paste the following command: 
+```sh
+mongosh "mongodb+srv://<your_username>:<your_password>@attendance-db.j3wq2.mongodb.net/?retryWrites=true&w=majority&appName=attendance-db"
+```
+Replace <your_username> and <your_password> with the username and password for the user you created on MongoDB Atlas
 
 ### Installation
 
@@ -30,8 +44,9 @@ For development, you will need to run both the frontend and backend servers. The
     ```
 3. Create a `.env` file in the `server` directory with the following contents:
     ```env
-    TBD
+    DATABASE_URL="mongodb+srv://<your_username>:<your_password>@attendance-db.j3wq2.mongodb.net/?retryWrites=true&w=majority&appName=attendance-db"
     ```
+    Replace <your_username> and <your_password> with the username and password for the user you created on MongoDB Atlas.
 
 ### Running the Application
 
@@ -40,6 +55,12 @@ Since the frontend and backend are separate applications, they will run independ
 ```sh
 npm run dev
 ```
+if you get an "file type not supported" error, try running the following commands:
+```sh
+cd server
+npm install --save-dev ts-node typescript
+```
+and then go back to root directory and try running the application again
 
 This will start both the frontend and backend servers. The frontend server will run on port 3000, and the backend server will run on port 3001.
 
