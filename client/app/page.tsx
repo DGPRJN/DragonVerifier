@@ -1,11 +1,14 @@
-import Hello from "@/app/components/Hello";
-import NavBar from "@/app/components/NavBar";
-import Footer from "@/app/components/Footer";
+"use client"; // Ensures it runs on the client side
+
+import { Button, Typography, Container} from "@mui/material";
 
 export default function Home() {
   return (
-    <>
-      <h1>Something Simple</h1>
-    </>
+    <Container maxWidth="sm">
+      <Typography variant="h4">Dragon Verifier</Typography>
+      <Button variant="contained" color="primary">
+        Click Me
+      </Button>
+    </Container>
   );
 }

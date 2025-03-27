@@ -1,40 +1,44 @@
 "use client";
-import Link from "next/link"
 
+import React from "react";
+import Link from "next/link";
+import { Drawer, Button, List, ListItem, ListItemButton, Typography } from "@mui/material";
 
-function NavBar() {
-    return (
+export default function NavBar() {
+  const [open, setOpen] = React.useState(false);
+
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpen(newOpen);
+  };
+
+  const menuList = (
+    <List>
+      {[
+        { text: "Home", href: "/" },
+        { text: "About Us", href: "/about" },
+        { text: "Contacts", href: "/contact_us" },
+        { text: "Login", href: "/login" },
+      ].map(({ text, href }) => (
+        <ListItem key={href} disablePadding>
+          <Link href={href} passHref legacyBehavior>
+            <ListItemButton component="a">
+              <Typography>{text}</Typography>
+            </ListItemButton>
+          </Link>
+        </ListItem>
+      ))}
+    </List>
+  );
+
+  return (
     <>
-      <div className="w-full h-20 bg-emerald-800 sticky top-0">
-        <div className="container mx-auto px-4 h-full">
-          <div className="flex justify-center items-center">
-            <ul className="hidden md:flex gap-x-6 text-white">
-              <li>
-                <Link href="/">
-                  <p>Home</p>
-                </Link>
-              </li>
-              <li>
-                <Link href="/about">
-                  <p>About Us</p>
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact_us">
-                  <p>Contacts</p>
-                </Link>
-              </li>
-              <li>
-                <Link href="/login">
-                  <p>Login</p>
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      {/* Button to open the drawer */}
+      <Button onClick={toggleDrawer(true)}>Open drawer</Button>
+
+      {/* Drawer Component */}
+      <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
+        {menuList}
+      </Drawer>
     </>
   );
 }
-
-export default NavBar;
