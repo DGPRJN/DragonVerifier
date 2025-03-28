@@ -24,7 +24,7 @@ function NavBarContent() {
     {[
       { text: "Home", href: "/" },
       { text: "Calendar", href: "/Calendar" },
-      { text: "Attendance Record", href: "/" },
+      { text: "Classes", href: "/Classes" },
     ].map(({ text, href }) => (
       <ListItem key={`${href}-${text}`} disablePadding>
         <Link href={href} passHref legacyBehavior>
