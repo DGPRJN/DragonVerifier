@@ -1,10 +1,25 @@
 "use client";
-import { Button, Container } from "@mui/material";
+import { Button, Container, Typography } from "@mui/material";
 import React from 'react';
 import login from './login.tsx'
 
 //TODO Hook up Canvas API
+// Login oauth/login
 //Should be the log-in flow
+
+export const Account = () => {
+  return (
+    <Container maxWidth="lg" sx={{ bgcolor: "gray", padding: 4 }}>
+      <Typography variant="h4" sx={{ textAlign: "center" }}>
+        Dragon Verifier (User Side)
+      </Typography>
+      <Typography variant="body1" sx={{ textAlign: "center" }}>
+        Click here to login to Canvas
+      </Typography>
+      </Container>
+  );
+}
+
 const LoginButton = () => {
   const handleClick = () => {
     login();
@@ -22,7 +37,12 @@ const LoginButton = () => {
 };
 
 const Page = () => {
-  return <LoginButton />;
+  return (
+    <>
+      <Account />
+      <LoginButton />
+    </>
+  );
 };
 
 export default Page;
