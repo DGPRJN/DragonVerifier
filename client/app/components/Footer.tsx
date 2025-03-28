@@ -1,5 +1,7 @@
 import {Container, Typography} from "@mui/material";
 
+//Deprecated
+
 function Footer() {
     return (
     <>

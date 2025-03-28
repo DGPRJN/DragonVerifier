@@ -6,6 +6,7 @@ export default function Home() {
     <>
       <Container maxWidth="lg" sx={{ bgcolor: "gray", padding: 4 }}>
         <Typography variant="h4" sx={{ textAlign: "center" }}>Dragon Verifier (Home Page)</Typography>
+        <Typography variant="Body" sx={{ textAlign: "center" }}></Typography>
       </Container>
     </>
   );
