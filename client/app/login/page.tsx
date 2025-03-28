@@ -1,12 +1,13 @@
 "use client";
 import { Button, Container } from "@mui/material";
 import React from 'react';
+import login from './login.tsx'
 
 //TODO Hook up Canvas API
 //Should be the log-in flow
 const LoginButton = () => {
   const handleClick = () => {
-    console.log("Login button clicked");
+    login();
   };
 
   return (
