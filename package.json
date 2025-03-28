@@ -14,7 +14,7 @@
   "author": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently --names 'C,S' -c 'green,yellow' \"cd client && npm run dev\" \"cd server && npm start\""
+    "dev": "concurrently -k \"npm run dev --prefix client\" \"npm start --prefix server\""
   },
   "devDependencies": {
     "concurrently": "^9.1.2",
@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.4.1",
-    "ansi-regex": "^6.1.0"
+    "ansi-regex": "^6.1.0",
+    "next": "^15.2.4"
   }
 }
