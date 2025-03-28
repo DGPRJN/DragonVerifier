@@ -1,8 +1,15 @@
+import {Container, Typography} from "@mui/material";
+
+//Deprecated
 
 function Footer() {
     return (
     <>
-      <div>Footer: TODO</div>
+      <Container maxWidth="lg" sx={{ bgcolor: "lightgray", px: 4, pt: 1 }}>
+        <Typography variant="body1" sx={{ textAlign: "center" }}>
+          Random info idk man
+        </Typography>
+      </Container>
     </>
   );
 }

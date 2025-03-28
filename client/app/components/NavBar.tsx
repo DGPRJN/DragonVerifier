@@ -1,38 +1,58 @@
 "use client";
-import Link from "next/link"
 
+import React, { useState } from "react";
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import { Drawer, Button, List, ListItem, ListItemButton, Typography, ListSubheader, Divider } from "@mui/material";
 
-function NavBar() {
-    return (
+// Prevents Next.js from rendering NavBar on the server
+const NavBar = dynamic(() => Promise.resolve(NavBarContent), { ssr: false });
+
+function NavBarContent() {
+  const [open, setOpen] = useState(false);
+
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpen(newOpen);
+  };
+
+  return (
     <>
-      <div className="w-full h-20 bg-emerald-800 sticky top-0">
-        <div className="container mx-auto px-4 h-full">
-          <div className="flex justify-center items-center">
-            <ul className="hidden md:flex gap-x-6 text-white">
-              <li>
-                <Link href="/">
-                  <p>Home</p>
-                </Link>
-              </li>
-              <li>
-                <Link href="/about">
-                  <p>About Us</p>
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact_us">
-                  <p>Contacts</p>
-                </Link>
-              </li>
-              <li>
-                <Link href="/login">
-                  <p>Login</p>
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <Button onClick={toggleDrawer(true)}>Open Menu</Button>
+
+      <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
+ <List>
+    {[
+      { text: "Home", href: "/" },
+      { text: "Calendar", href: "/Calendar" },
+      { text: "Classes", href: "/Classes" },
+    ].map(({ text, href }) => (
+      <ListItem key={`${href}-${text}`} disablePadding>
+        <Link href={href} passHref legacyBehavior>
+          <ListItemButton component="a" onClick ={toggleDrawer(false)}>
+            <Typography>{text}</Typography>
+          </ListItemButton>
+        </Link>
+      </ListItem>
+    ))}
+
+    <Divider />
+
+    <ListSubheader>More</ListSubheader>
+    {[
+      { text: "About Us", href: "/about" },
+      { text: "Contacts", href: "/contact_us" },
+      { text: "Login/Account", href: "/login" },
+    ].map(({ text, href }) => (
+      <ListItem key={href} disablePadding>
+        <Link href={href} passHref legacyBehavior>
+          <ListItemButton component="a" onClick={toggleDrawer(false)}>
+            <Typography>{text}</Typography>
+          </ListItemButton>
+        </Link>
+      </ListItem>
+    ))}
+  </List>
+      </Drawer>
     </>
   );
 }
