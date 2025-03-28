@@ -15,7 +15,7 @@ For development, you will need to run both the frontend and backend servers. The
 - npm
 - MongoDB Atlas
 
-### MongoDB Atlas Setup
+### MongoDB Setup
  1. Create an account at https://www.mongodb.com/cloud/atlas/register 
  2. Once you have created an account and are invited to the project, create a project user for yourself:
     - Click on "Database Access" in the sidebar
@@ -23,7 +23,21 @@ For development, you will need to run both the frontend and backend servers. The
     - Create a username and password (important that you save these for later)
     - Change role to "Atlas Admin" and then select "Add User"
 
-This will allow you to access and edit the database.
+3. To view and query the database from a terminal (There is sample data in the database for you to try):
+    - run this command:
+    ```sh 
+    mongosh <your connection string> 
+    ```
+** Your connection string is the value for the DATABASE_URL variable that you will set in your .env file (See "Installation" section below for more details)
+
+4. (Optional) Download MongoDB Compass: https://www.mongodb.com/try/download/compass
+    - This provides a GUI interface approach to viewing the database instead of querying from terminal
+
+    
+
+
+
+
 
 ### Installation
 
@@ -41,9 +55,11 @@ This will allow you to access and edit the database.
     ```
 3. Create a `.env` file in the `server` directory with the following contents:
     ```env
-    DATABASE_URL="mongodb+srv://<your_username>:<your_password>@attendance-db.j3wq2.mongodb.net/?retryWrites=true&w=majority&appName=attendance-db"
+    DATABASE_URL="mongodb+srv://<your_username>:<your_password>@attendance-db.j3wq2.mongodb.net/attendanceDB?retryWrites=true&w=majority&appName=attendance-db"
     ```
     Replace <your_username> and <your_password> with the username and password for the user you created on MongoDB Atlas.
+
+    
 
 ### Running the Application
 
