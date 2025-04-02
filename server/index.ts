@@ -2,7 +2,7 @@ import express from "express";
 import { prisma, connectDB } from "./db"; // Import the database connection
 import cors from "cors";
 import bodyParser from "body-parser";
-import courses from "./routes/courses.js";
+import courses from "./routes/courses";
 
 import geofenceRoutes from "./routes/geofenceRoutes";
 
