@@ -1,9 +1,9 @@
 import express from "express";
-import { prisma, connectDB } from "./db.js"; // Import the database connection
+import { prisma, connectDB } from "./db"; // Import the database connection
 import cors from "cors";
 import bodyParser from "body-parser";
-// @ts-ignore
-import geofenceRoutes from "./routes/geofenceRoutes.js";
+
+import geofenceRoutes from "./routes/geofenceRoutes";
 
 const app = express();
 const port = process.env.EXPRESS_PORT;
