@@ -1,30 +1,31 @@
 {
-  "name": "dragonverifier",
-  "version": "1.0.0",
-  "description": "",
-  "homepage": "https://github.com/DGPRJN/DragonVerifier#readme",
-  "bugs": {
-    "url": "https://github.com/DGPRJN/DragonVerifier/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/DGPRJN/DragonVerifier.git"
-  },
-  "license": "ISC",
-  "author": "",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently -k \"npm run dev --prefix client\" \"npm start --prefix server\""
-  },
-  "devDependencies": {
-    "concurrently": "^9.1.2",
-    "prisma": "^6.4.1",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
-  },
-  "dependencies": {
-    "@prisma/client": "^6.4.1",
-    "ansi-regex": "^6.1.0",
-    "next": "^15.2.4"
-  }
+    "name": "dragonverifier",
+    "version": "1.0.0",
+    "description": "",
+    "homepage": "https://github.com/DGPRJN/DragonVerifier#readme",
+    "bugs": {
+        "url": "https://github.com/DGPRJN/DragonVerifier/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/DGPRJN/DragonVerifier.git"
+    },
+    "license": "ISC",
+    "author": "",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "concurrently --names 'C,S' -c 'green,yellow' -k \"npm run dev --prefix client\" \"npm start --prefix server\"",
+        "install": "echo \"========= Client =========\"; npm i --prefix client; echo \"\n========= Server =========\"; npm i --prefix server"
+    },
+    "devDependencies": {
+        "concurrently": "^9.1.2",
+        "prisma": "^6.4.1",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.7.3"
+    },
+    "dependencies": {
+        "@prisma/client": "^6.4.1",
+        "ansi-regex": "^6.1.0",
+        "next": "^15.2.4"
+    }
 }
