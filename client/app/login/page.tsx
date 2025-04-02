@@ -1,11 +1,14 @@
+//Need to move this to (user_side)
+//Need to try to get rid of "use client"
 "use client";
 import { Button, Container, Typography } from "@mui/material";
-import React from 'react';
-import login from './login.tsx'
+import React from "react";
+import login from "./login.tsx";
 
 //TODO Hook up Canvas API
 // Login oauth/login
 //Should be the log-in flow
+//Please Don't add any more non-UI code, add what you need to login.tsx
 
 export const Account = () => {
   return (
@@ -16,9 +19,9 @@ export const Account = () => {
       <Typography variant="body1" sx={{ textAlign: "center" }}>
         Click here to login to Canvas
       </Typography>
-      </Container>
+    </Container>
   );
-}
+};
 
 const LoginButton = () => {
   const handleClick = () => {
@@ -27,7 +30,12 @@ const LoginButton = () => {
 
   return (
     <Container
-      sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+      }}
     >
       <Button variant="contained" color="primary" onClick={handleClick}>
         Login
