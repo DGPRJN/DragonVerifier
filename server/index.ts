@@ -2,6 +2,7 @@ import express from "express";
 import {prisma, connectDB} from "./db.js"; // Import the database connection
 import cors from "cors";
 import bodyParser from "body-parser";
+import courses from "./routes/courses.js";
 // @ts-ignore
 import geofenceRoutes from "./routes/geofenceRoutes.js";
 
@@ -38,6 +39,13 @@ app.use(cors({
   methods: ["GET", "POST"],        
   credentials: true,         
 }));
+
+app.use("/api/courses", courses);
+
+app.use((req, res, next) => {
+  console.log(`${req.method} request to ${req.url}`);
+  next();
+});
 
 app.use(bodyParser.json());
 app.use("/api", geofenceRoutes);

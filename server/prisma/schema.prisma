@@ -44,6 +44,7 @@ model Course {
   canvasId     String             @unique
   instructorId String             @db.ObjectId // for storing instructor's id value from User object
   instructor   User               @relation("Instructor", fields: [instructorId], references: [id]) // relates Course's instructor id to instructor's user id
+  blazerId String                 @unique 
   schedule     Json // stores class schedule                      
   students     Enrollment[] // stores relationships of Course to student Enrollment           
   attendance   AttendanceRecord[] // stores attendance records
@@ -58,6 +59,7 @@ model Enrollment {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId // auto generated MongoDB object id
   studentId String   @db.ObjectId // for storing student's id value from User object
   student   User     @relation(fields: [studentId], references: [id]) // relates studentId value to id from User object
+  blazerId String    @unique 
   courseId  String   @db.ObjectId // for storing course's id value from Course object
   course    Course   @relation(fields: [courseId], references: [id]) // relates courseId value to id from Course object
   createdAt DateTime @default(now()) // stores date and time created so that data can be deleted after a time (i.e., when semester's over)  
