@@ -23,6 +23,7 @@ export const Account = () => {
   );
 };
 
+//Please Don't add any more non-UI code, add what you need to login.tsx
 const LoginButton = () => {
   const handleClick = () => {
     login();
