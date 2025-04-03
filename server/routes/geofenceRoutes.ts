@@ -2,15 +2,15 @@ import express, { Request, Response } from "express";
 import fs from "fs";
 import path from "path";
 import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
-import turf from "@turf/helpers";
-import { Polygon } from "geojson";
+import { point } from "@turf/helpers";
+import { Feature, Polygon } from "geojson";
 
 const router = express.Router();
 
 // Load GeoJSON geofences
-const geojsonPath = path.resolve(__dirname, "../tester.geojson");
+const geojsonPath = path.resolve(__dirname, "../routes/hhb/first_floor/102.geojson");
 const geojsonData = JSON.parse(fs.readFileSync(geojsonPath, "utf-8"));
-console.log("GeoJSON file path:", geojsonPath);
+console.log("✅ GeoJSON file loaded from:", geojsonPath);
 
 router.post("/check-location", (req: Request, res: Response) => {
     console.log("✅ API hit: /check-location");
@@ -22,12 +22,12 @@ router.post("/check-location", (req: Request, res: Response) => {
         return;
     }
 
-    const userPoint = turf.point([longitude, latitude]);
-    console.log(latitude);
-    console.log(longitude);
+    const userPoint = point([parseFloat(longitude), parseFloat(latitude)]);
+    console.log("📍 User Location:", latitude, longitude);
 
-    const insideGeofence = geojsonData.features.some((feature: Polygon) =>
-        booleanPointInPolygon(userPoint, feature)
+
+    const insideGeofence = geojsonData.features.some((feature: Feature<Polygon>) =>
+        booleanPointInPolygon(userPoint, feature.geometry)
     );
 
     res.json({ insideGeofence });

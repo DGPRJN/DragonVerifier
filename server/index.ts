@@ -18,6 +18,10 @@ app.get(`${rootApi}/health`, (req, res) => {
     res.json({ success: true });
 });
 
+app.get("/", (req, res) => {
+    res.json({ success: true });
+  });
+
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*"); // Allow all origins (change "*" to specific domains if needed)
     res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");

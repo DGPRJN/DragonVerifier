@@ -4,7 +4,7 @@ import {Button} from "@mui/material";
 export const CheckinButton = () => {
   const [location, setLocation] = useState<string | null>(null);
   const [isInside, setIsInside] = useState<boolean | null>(null);
-  const API_BASE_URL = "NGROK Link"; //replace with ngrok url on startup
+  const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   console.log("API Base URL:", API_BASE_URL);
 
@@ -40,7 +40,6 @@ export const CheckinButton = () => {
   return(
     <div>
       <Button variant="contained" color="primary" onClick={getLocation}>Check-in</Button>
-      {location && <p>{location}</p>}
       {isInside !== null && (
         <p>
           {isInside ? "Thank you for using Dragon Verifier. You are now checked in and may close this page" : "Check in failed. Please ensure you are inside the geofence before attempting to check in again"}
