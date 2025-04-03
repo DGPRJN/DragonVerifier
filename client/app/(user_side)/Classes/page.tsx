@@ -18,12 +18,12 @@ const Page = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/courses`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/courses`);
         if (response.ok) {
           const data: Course[] = await response.json();
           setCourses(data);
         } else {
-          console.error("No courses found for this blazerId");
+          console.error("No courses found for this user");
         }
       } catch (error) {
         console.error("Error fetching courses:", error);
