@@ -1,0 +1,11 @@
+{
+"type": "FeatureCollection",
+"name": "226",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 16 }, "geometry": { "type": "MultiPolygon", "coordinates": [ ] } },
+{ "type": "Feature", "properties": { "id": 16 }, "geometry": { "type": "MultiPolygon", "coordinates": [ ] } },
+{ "type": "Feature", "properties": { "id": 17 }, "geometry": { "type": "MultiPolygon", "coordinates": [ ] } },
+{ "type": "Feature", "properties": { "id": 16 }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ -86.806609703152233, 33.500707179282664 ], [ -86.806428470070998, 33.500778605016343 ], [ -86.806317223251696, 33.500627043023492 ], [ -86.806508902043632, 33.500545600118876 ], [ -86.806609703152233, 33.500707179282664 ] ] ] ] } }
+]
+}
