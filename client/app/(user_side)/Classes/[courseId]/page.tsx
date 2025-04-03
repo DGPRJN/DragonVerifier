@@ -7,26 +7,26 @@ interface Course {
   id: string;
   canvasId: string;
   schedule: {
-    days: string[]; 
-    time: string; 
+    days: string[];
+    time: string;
   };
   instructor: {
     id: string;
-    name: string; 
+    name: string;
   };
 }
 
 const CourseDetails = () => {
   const [course, setCourse] = useState<Course | null>(null);
-  const params = useParams(); 
-  const courseId = params?.courseId as string; 
+  const params = useParams();
+  const courseId = params?.courseId as string;
 
   useEffect(() => {
     if (!courseId) return;
 
     const fetchCourse = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/courses/${courseId}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/courses/${courseId}`); // Fetch specific course using courseId
         if (response.ok) {
           const data: Course = await response.json();
           setCourse(data);
