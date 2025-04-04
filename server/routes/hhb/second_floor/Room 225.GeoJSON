@@ -1,6 +1,6 @@
 {
 "type": "FeatureCollection",
-"name": "225",
+"name": "Room 225",
 "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
 "features": [
 { "type": "Feature", "properties": { "id": 15 }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ -86.806742767139554, 33.500811403429715 ], [ -86.806593838250819, 33.500876028155119 ], [ -86.806505134523988, 33.500718748618738 ], [ -86.806639590699376, 33.500658406146499 ], [ -86.806742767139554, 33.500811403429715 ] ] ] ] } }
