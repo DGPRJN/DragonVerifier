@@ -1,8 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "Room 536",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"features": [
-{ "type": "Feature", "properties": { "id": 26 }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ -86.806649733793989, 33.500393543815989 ], [ -86.806545217710948, 33.500251230074277 ], [ -86.806822159981593, 33.500126470615307 ], [ -86.806924289740678, 33.500284893140147 ], [ -86.806649733793989, 33.500393543815989 ] ] ] ] } }
-]
-}

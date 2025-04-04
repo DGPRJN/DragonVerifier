@@ -1,8 +1,0 @@
-{
-"type": "FeatureCollection",
-"name": "Room 102",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-"features": [
-{ "type": "Feature", "properties": { "id": 0 }, "geometry": { "type": "MultiPolygon", "coordinates": [ [ [ [ -86.806877756123868, 33.500644651128056 ], [ -86.80672301470014, 33.500440262857367 ], [ -86.806941227047375, 33.500353551538723 ], [ -86.807070928499755, 33.500567561608776 ], [ -86.806877756123868, 33.500644651128056 ] ] ] ] } }
-]
-}
