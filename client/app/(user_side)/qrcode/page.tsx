@@ -8,6 +8,7 @@ const GenerateQRCode = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [expired, setExpired] = useState(false);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
+  const [qrGenerated, setQrGenerated] = useState(false);  // Track if QR is generated
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const loginUrl = process.env.NEXT_PUBLIC_FRONTEND_URL;
@@ -16,6 +17,7 @@ const GenerateQRCode = () => {
     generate(canvasRef.current, `${loginUrl}`);
     setExpired(false);
     setTimeLeft(60);
+    setQrGenerated(true);  // Mark QR code as generated
 
     if (timerRef.current) clearInterval(timerRef.current);
 
@@ -60,7 +62,13 @@ const GenerateQRCode = () => {
       </Button>
 
       <Box mt={2}>
-        <canvas ref={canvasRef} style={{ border: "1px solid #ccc" }} />
+        <canvas
+          ref={canvasRef}
+          style={{
+            border: qrGenerated ? "1px solid #ccc" : "none",  // Apply border only if QR is generated
+            display: qrGenerated ? "block" : "none",  // Hide canvas until QR is generated
+          }}
+        />
       </Box>
 
       {timeLeft !== null && !expired && (
