@@ -90,7 +90,6 @@ model ClassroomLocation {
   course    Course @relation("CourseLocation", fields: [courseId], references: [id]) // relates courseId value to id from User object
   latitude  Float
   longitude Float
-  radius    Float // acceptable radius for check-in
 
   @@map("ClassroomLocations") 
 }

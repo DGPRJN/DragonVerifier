@@ -15,7 +15,7 @@ console.log("✅ GeoJSON file loaded from:", geojsonPath);
 router.post("/check-location", (req: Request, res: Response) => {
     console.log("✅ API hit: /check-location");
 
-    const { latitude, longitude, blazerID } = req.body;
+    const { latitude, longitude } = req.body;
 
     if (!latitude || !longitude) {
         res.status(400).json({ error: "Missing latitude or longitude" });
