@@ -3,17 +3,19 @@ import { prisma, connectDB } from "./db"; // Import the database connection
 import cors from "cors";
 import bodyParser from "body-parser";
 import courses from "./routes/courses";
-
 import geofenceRoutes from "./routes/geofenceRoutes";
+import qrCodes from "./routes/qrCodes";
+
 
 const app = express();
 const port = process.env.EXPRESS_PORT;
+
 
 const rootApi = "/api/v1";
 
 connectDB(); // establish connection to MongoDB
 
-// Endpoint to ensure the API is up and running
+
 app.get(`${rootApi}/health`, (req, res) => {
     res.json({ success: true });
 });
@@ -40,10 +42,6 @@ app.use(express.json());
 import oauthRouter from "./api/oauth";
 app.use(`${rootApi}/oauth`, oauthRouter);
 
-app.listen(port, () => {
-    console.log(`Server started at http://localhost:${port}`);
-});
-
 app.use(
     cors({
         origin: "*",
@@ -52,9 +50,16 @@ app.use(
     })
 );
 
-app.use("/api/courses", courses);
-
 app.use(bodyParser.json());
 app.use("/api", geofenceRoutes);
+app.use("/api", courses);
+app.use("/api", qrCodes);
+
+
+
+app.listen(port, () => {
+    console.log(`Server started at http://localhost:${port}`);
+});
+
 
 export default app;
