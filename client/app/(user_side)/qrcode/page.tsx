@@ -28,11 +28,6 @@ const GenerateQRCode = () => {
           clearInterval(timerRef.current!);
           setExpired(true);
 
-          const ctx = canvasRef.current?.getContext("2d");
-          if (ctx && canvasRef.current) {
-            ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-          }
-
           return 0;
         }
         return prev - 1;
@@ -64,15 +59,11 @@ const GenerateQRCode = () => {
       <Box mt={2}>
         <canvas
           ref={canvasRef}
-          style={{
-            border: qrGenerated ? "1px solid #ccc" : "none",
-            display: qrGenerated ? "block" : "none",
-          }}
         />
       </Box>
 
       {timeLeft !== null && !expired && (
-        <Typography variant="body2" color="error" mt={1}>
+        <Typography variant="body2" color="white" mt={1}>
           QR Code expires in: {timeLeft} second{timeLeft !== 1 ? "s" : ""}
         </Typography>
       )}

@@ -4,6 +4,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import courses from "./routes/courses";
 import geofenceRoutes from "./routes/geofenceRoutes";
+import qrCodes from "./routes/qrCodes";
 
 
 const app = express();
@@ -14,7 +15,7 @@ const rootApi = "/api/v1";
 
 connectDB(); // establish connection to MongoDB
 
-// Endpoint to ensure the API is up and running
+
 app.get(`${rootApi}/health`, (req, res) => {
     res.json({ success: true });
 });
@@ -49,10 +50,11 @@ app.use(
     })
 );
 
-
 app.use(bodyParser.json());
 app.use("/api", geofenceRoutes);
-app.use("/api/courses", courses);
+app.use("/api", courses);
+app.use("/api", qrCodes);
+
 
 
 app.listen(port, () => {
