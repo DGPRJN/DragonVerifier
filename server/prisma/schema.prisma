@@ -90,6 +90,8 @@ model ClassroomLocation {
   course    Course @relation("CourseLocation", fields: [courseId], references: [id]) // relates courseId value to id from User object
   roomNumber   String
   buildingCode String
+  latitude  Float
+  longitude Float
 
   @@map("ClassroomLocations") 
 }

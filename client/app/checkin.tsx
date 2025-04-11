@@ -6,7 +6,6 @@ export const CheckinButton = () => {
   const [isInside, setIsInside] = useState<boolean | null>(null);
   const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  console.log("API Base URL:", API_BASE_URL);
 
   const getLocation = () => {
     if (navigator.geolocation) {
@@ -29,6 +28,11 @@ export const CheckinButton = () => {
         },
         (error) => {
           alert('Error getting location: ' + error.message);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,           
+          maximumAge: 0
         }
       );
     } else {
