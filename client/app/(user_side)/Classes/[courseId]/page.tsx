@@ -26,7 +26,7 @@ const CourseDetails = () => {
 
     const fetchCourse = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/courses/${courseId}`); // Fetch specific course using courseId
+        const response = await fetch(`/api/courses/${courseId}`); // Fetch specific course using courseId
         if (response.ok) {
           const data: Course = await response.json();
           setCourse(data);

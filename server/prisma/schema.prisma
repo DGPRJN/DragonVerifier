@@ -88,9 +88,8 @@ model ClassroomLocation {
   id        String @id @default(auto()) @map("_id") @db.ObjectId // auto-generated MongoDB object id
   courseId  String @unique @db.ObjectId // for storing course's id value from Course object
   course    Course @relation("CourseLocation", fields: [courseId], references: [id]) // relates courseId value to id from User object
-  latitude  Float
-  longitude Float
-  radius    Float // acceptable radius for check-in
+  roomNumber   String
+  buildingCode String
 
   @@map("ClassroomLocations") 
 }
