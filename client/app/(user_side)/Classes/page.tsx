@@ -18,7 +18,7 @@ const Page = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/courses`);
+        const response = await fetch("/api/courses");
         if (response.ok) {
           const data: Course[] = await response.json();
           setCourses(data);
