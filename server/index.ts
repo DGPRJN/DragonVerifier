@@ -52,7 +52,7 @@ app.use(
 
 app.use(bodyParser.json());
 app.use("/api", geofenceRoutes);
-app.use("/api", courses);
+app.use("/api/courses", courses);
 app.use("/api", qrCodes);
 
 
