@@ -1,36 +1,37 @@
 {
-  "name": "client",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "@fontsource/inter": "^5.1.1",
-    "@mui/icons-material": "^7.0.0",
-    "@mui/joy": "^5.0.0-beta.51",
-    "@mui/material": "^7.0.0",
-    "date-fns": "^4.1.0",
-    "moment": "^2.30.1",
-    "next": "^15.1.7",
-    "qrcode": "^1.5.4",
-    "react": "^19.1.0",
-    "react-big-calendar": "^1.18.0",
-    "react-dom": "^19.1.0"
-  },
-  "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@types/node": "^20",
-    "@types/qrcode": "^1.5.5",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.1.7",
-    "typescript": "^5"
-  }
+    "name": "client",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "dotenvx run -f ../.env -- next dev --turbopack",
+        "build": "dotenvx run -f ../.env -- next build",
+        "start": "dotenvx run -f ../.env -- next start",
+        "lint": "next lint"
+    },
+    "dependencies": {
+        "@dotenvx/dotenvx": "^1.39.1",
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.0",
+        "@fontsource/inter": "^5.1.1",
+        "@mui/icons-material": "^7.0.0",
+        "@mui/joy": "^5.0.0-beta.51",
+        "@mui/material": "^7.0.0",
+        "date-fns": "^4.1.0",
+        "moment": "^2.30.1",
+        "next": "^15.1.7",
+        "qrcode": "^1.5.4",
+        "react": "^19.1.0",
+        "react-big-calendar": "^1.18.0",
+        "react-dom": "^19.1.0"
+    },
+    "devDependencies": {
+        "@eslint/eslintrc": "^3",
+        "@types/node": "^20",
+        "@types/qrcode": "^1.5.5",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "eslint": "^9",
+        "eslint-config-next": "15.1.7",
+        "typescript": "^5"
+    }
 }

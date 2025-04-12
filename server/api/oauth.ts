@@ -2,11 +2,6 @@ import express, { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import cookieParser from "cookie-parser";
 
-import dotenv from "dotenv";
-import app from "..";
-
-dotenv.config(); // Load .env variables
-
 const prisma = new PrismaClient();
 const router = express.Router();
 router.use(cookieParser());
