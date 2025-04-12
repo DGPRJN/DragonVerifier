@@ -5,17 +5,17 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "nodemon index.ts"
+        "start": "dotenvx run -f ../.env -- nodemon index.ts"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@dotenvx/dotenvx": "^1.39.1",
         "@prisma/client": "^6.4.1",
         "@turf/boolean-point-in-polygon": "^7.2.0",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",
-        "dotenv": "^16.4.7",
         "express": "^4.21.2",
         "jose": "^6.0.10",
         "mongodb": "^6.13.0",
