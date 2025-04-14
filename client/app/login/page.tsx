@@ -44,7 +44,7 @@ export const Account = ({ isValid }: { isValid: boolean }) => {
             margin: "20px auto",
           }}
         >
-          QR Code has expired or is invalid. Please scan a valid QR code.
+          QR code or Link has expired or is invalid. Please scan a valid QR code or visit a valid Link.
         </Typography>
       )}
     </Container>

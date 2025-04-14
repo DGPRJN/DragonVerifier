@@ -36,7 +36,7 @@ router.get("/:id", (req: Request<{ id: string }>, res: Response): void => {
     const expired = Date.now() - entry.createdAt > expire_time;
 
     if (expired) {
-        console.log(`QR code ${id} expired`);
+        console.log(`${id} expired`);
         qrCodes.delete(id);
         res.status(410).json({ valid: false, reason: "Expired" });
         return;
