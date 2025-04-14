@@ -13,7 +13,7 @@ const geojsonData = JSON.parse(fs.readFileSync(geojsonPath, "utf-8"));
 console.log("✅ GeoJSON file loaded from:", geojsonPath);
 
 router.post("/check-location", (req: Request, res: Response) => {
-    console.log("✅ API hit: /check-location");
+    console.log("API hit ✅: /check-location");
 
     const { latitude, longitude } = req.body;
 
@@ -23,7 +23,7 @@ router.post("/check-location", (req: Request, res: Response) => {
     }
 
     const userPoint = point([parseFloat(longitude), parseFloat(latitude)]);
-    console.log("📍 User Location:", latitude, longitude);
+    console.log("User Location: 📍", latitude, longitude);
 
     const insideGeofence = geojsonData.features.some(
         (feature: Feature<Polygon>) =>
