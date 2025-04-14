@@ -74,8 +74,6 @@ model AttendanceRecord {
   student      User            @relation(fields: [studentId], references: [id]) // relates studentId value to id from User object
   courseId     String          @db.ObjectId // for storing course's id value from Course object
   course       Course          @relation(fields: [courseId], references: [id]) // relates courseId value to id from Course object
-  latitude     Float?
-  longitude    Float?
   withinRadius Boolean         @default(false)
   status       AttendanceValue @default(Pending) // stores attendance value (default value = Pending)
   timestamp    DateTime        @default(now()) // stores date and time that attendance value was recorded
@@ -90,8 +88,6 @@ model ClassroomLocation {
   course    Course @relation("CourseLocation", fields: [courseId], references: [id]) // relates courseId value to id from User object
   roomNumber   String
   buildingCode String
-  latitude  Float
-  longitude Float
 
   @@map("ClassroomLocations") 
 }
