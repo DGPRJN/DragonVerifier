@@ -1,7 +1,6 @@
 import QRCode from "qrcode";
 
 
-
 export const generate = async (element: HTMLCanvasElement | null, loginUrl: string) => {
   if (!element) return;
   const randomString = Math.random().toString(36).substring(2, 15);
@@ -22,6 +21,7 @@ export const generate = async (element: HTMLCanvasElement | null, loginUrl: stri
       body: JSON.stringify({ id: randomString }),
     });
 
+    // Can delete block after testing is finished
     // Check if the QR code is still valid by calling the backend
     await new Promise((resolve) => setTimeout(resolve, 6000));
     const response = await fetch(`${API_BASE_URL}api/qr/${randomString}`);
@@ -32,6 +32,8 @@ export const generate = async (element: HTMLCanvasElement | null, loginUrl: stri
     } else {
       console.log("QR code has expired or is invalid");
     }
+    // Can delete up to here
+
   } catch (err) {
     console.error("Failed to generate QR code", err);
   }

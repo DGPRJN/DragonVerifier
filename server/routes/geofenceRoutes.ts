@@ -8,7 +8,7 @@ import { Feature, Polygon } from "geojson";
 const router = express.Router();
 
 // Load GeoJSON geofences
-const geojsonPath = path.resolve(__dirname, "../routes/hhb/102.geojson");
+const geojsonPath = path.resolve(__dirname, "../routes/uh/1007.geojson");
 const geojsonData = JSON.parse(fs.readFileSync(geojsonPath, "utf-8"));
 console.log("✅ GeoJSON file loaded from:", geojsonPath);
 

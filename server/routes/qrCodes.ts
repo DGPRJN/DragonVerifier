@@ -14,7 +14,7 @@ type QRCodeEntry = {
 
 const qrCodes = new Map<string, QRCodeEntry>();
 
-// Cleanup job to remove expired codes every 5 seconds
+// Cleanup job to remove expired qr codes every 5 seconds
 setInterval(() => {
   const now = Date.now();
   for (const [key, value] of qrCodes.entries()) {
