@@ -5,7 +5,7 @@ export const generate = async (
   if (!loginUrl) return null;
 
   const randomString = Math.random().toString(36).substring(2, 15);
-  const uniqueLoginUrl = `${loginUrl}/login/?id=${randomString}`;
+  const uniqueLoginUrl = `${loginUrl}/?id=${randomString}`;
   const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_LOCAL;
 
   try {
@@ -15,7 +15,7 @@ export const generate = async (
         width: 400,
       });
     }
-
+    
     await fetch(`${API_BASE_URL}/api/v1/qr`, {
       method: "POST",
       headers: {
@@ -24,8 +24,6 @@ export const generate = async (
       body: JSON.stringify({ id: randomString }),
     });
 
-    // Optional: Validate it from backend
-    await new Promise((resolve) => setTimeout(resolve, 6000));
     const response = await fetch(`${API_BASE_URL}/api/v1/qr/${randomString}`);
     const data = await response.json();
 
