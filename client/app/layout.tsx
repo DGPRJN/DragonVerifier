@@ -18,6 +18,7 @@ export const metadata: Metadata = {
   description: "The best attendance solution :D",
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
