@@ -74,8 +74,6 @@ model AttendanceRecord {
   student      User            @relation(fields: [studentId], references: [id]) // relates studentId value to id from User object
   courseId     String          @db.ObjectId // for storing course's id value from Course object
   course       Course          @relation(fields: [courseId], references: [id]) // relates courseId value to id from Course object
-  latitude     Float?
-  longitude    Float?
   withinRadius Boolean         @default(false)
   status       AttendanceValue @default(Pending) // stores attendance value (default value = Pending)
   timestamp    DateTime        @default(now()) // stores date and time that attendance value was recorded
@@ -88,9 +86,8 @@ model ClassroomLocation {
   id        String @id @default(auto()) @map("_id") @db.ObjectId // auto-generated MongoDB object id
   courseId  String @unique @db.ObjectId // for storing course's id value from Course object
   course    Course @relation("CourseLocation", fields: [courseId], references: [id]) // relates courseId value to id from User object
-  latitude  Float
-  longitude Float
-  radius    Float // acceptable radius for check-in
+  roomNumber   String
+  buildingCode String
 
   @@map("ClassroomLocations") 
 }

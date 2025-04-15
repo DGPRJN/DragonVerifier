@@ -1,7 +1,6 @@
-
-
 export const login = () => {
-  console.log("Login Button Clicked");
-}
-
+    console.log("Login Button Clicked");
+  }
+  
+  
 export default login;

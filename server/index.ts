@@ -1,10 +1,6 @@
 import express from "express";
-import { prisma, connectDB } from "./db"; // Import the database connection
+import { connectDB } from "./db"; // Import the database connection
 import cors from "cors";
-import bodyParser from "body-parser";
-import courses from "./routes/courses";
-
-import geofenceRoutes from "./routes/geofenceRoutes";
 
 const app = express();
 const port = process.env.EXPRESS_PORT;
@@ -13,48 +9,48 @@ const rootApi = "/api/v1";
 
 connectDB(); // establish connection to MongoDB
 
-// Endpoint to ensure the API is up and running
+// ========= Global middlewares =========
+
+app.use(
+    cors({
+        origin: "*", // TODO: Probably shouldn't do this...
+        methods: ["GET", "POST", "OPTIONS"],
+        credentials: true,
+    })
+);
+
+app.use(express.json());
+
+// Health and root endpoints
 app.get(`${rootApi}/health`, (req, res) => {
     res.json({ success: true });
 });
 
 app.get("/", (req, res) => {
     res.json({ success: true });
-  });
-
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*"); // Allow all origins (change "*" to specific domains if needed)
-    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    res.header("Access-Control-Allow-Credentials", "true");
-    next();
 });
 
+// TODO: Probably shouldn't do this...
 app.options("*", (req, res) => {
     res.sendStatus(200);
 });
 
-app.use(express.json());
+// ========= Individual route configurations =========
 
-// Import and use the OAuth router
+import courses from "./api/courses";
+app.use(`${rootApi}/courses`, courses);
+
+import geofenceRoutes from "./api/geofenceRoutes";
+app.use(`${rootApi}/geofence`, geofenceRoutes);
+
 import oauthRouter from "./api/oauth";
 app.use(`${rootApi}/oauth`, oauthRouter);
+
+import qrCodes from "./api/qrCodes";
+app.use(`${rootApi}/qr`, qrCodes);
 
 app.listen(port, () => {
     console.log(`Server started at http://localhost:${port}`);
 });
-
-app.use(
-    cors({
-        origin: "*",
-        methods: ["GET", "POST"],
-        credentials: true,
-    })
-);
-
-app.use("/api/courses", courses);
-
-app.use(bodyParser.json());
-app.use("/api", geofenceRoutes);
 
 export default app;

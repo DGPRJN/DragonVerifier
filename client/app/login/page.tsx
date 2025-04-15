@@ -1,14 +1,18 @@
 //Need to move this to (user_side)
 //Need to try to get rid of "use client"
+
 "use client";
-import { Button, Container, Typography } from "@mui/material";
+import { Button, Container, Typography, Box } from "@mui/material";
 import React from "react";
 import login from "./login.tsx";
-
 //TODO Hook up Canvas API
 // Login oauth/login
 //Should be the log-in flow
 //Please Don't add any more non-UI code, add what you need to login.tsx
+
+
+// Function to check QR code validity
+// Page.tsx
 
 export const Account = () => {
   return (

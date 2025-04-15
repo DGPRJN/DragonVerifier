@@ -18,12 +18,17 @@
         "install": "echo \"========= Client =========\"; npm i --prefix client; echo \"\n========= Server =========\"; npm i --prefix server"
     },
     "devDependencies": {
+        "@types/express": "^5.0.1",
         "concurrently": "^9.1.2",
         "prisma": "^6.4.1",
         "ts-node": "^10.9.2",
-        "typescript": "^5.7.3"
+        "typescript": "^5.8.3"
     },
     "dependencies": {
-        "@prisma/client": "^6.4.1"
+        "@prisma/client": "^6.4.1",
+        "next": "^15.2.4",
+        "qrcode": "^1.5.4",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0"
     }
 }
