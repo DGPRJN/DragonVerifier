@@ -39,10 +39,8 @@ function NavBarContent() {
 
   return (
     <>
-
-      </header>
       <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
- <List>
+      <List>
     {[
       { text: "Home", href: "/" },
       { text: "Calendar", href: "/Calendar" },
