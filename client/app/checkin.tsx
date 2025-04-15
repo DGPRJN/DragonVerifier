@@ -47,7 +47,9 @@ export const CheckinButton = () => {
 
     return (
         <div>
-            <Button variant="contained" color="primary" onClick={getLocation}>
+            <Button variant="contained" color="primary" onClick={getLocation} sx={{
+                fontSize: '1.2rem',
+                width: '400px'}}>
                 Check-in
             </Button>
             {isInside !== null && (
