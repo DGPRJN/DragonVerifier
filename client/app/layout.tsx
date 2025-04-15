@@ -2,6 +2,19 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from './components/NavBar';
+import { createTheme, ThemeProvider, Typography } from "@mui/material";
+
+const theme = createTheme({
+  typography: {
+    h3: {
+      fontSize: "3rem",
+      fontWeight: 500,
+      fontFamily: "sans-serif",
+      fontStyle: "italic",
+      color: "black",  // Use 'color' instead of 'fontColor'
+    },
+  },
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,7 +31,6 @@ export const metadata: Metadata = {
   description: "The best attendance solution :D",
 };
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -30,8 +42,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable}`}
         style={{ backgroundColor: "#FFFFFF" }} // White background for the page layout
       >
-        <NavBar/>
-        {children}
+          <NavBar/>
+          {children}
       </body>
     </html>
   );

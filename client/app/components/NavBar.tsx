@@ -51,7 +51,9 @@ const Header = ({ toggleDrawer }: { toggleDrawer: (open: boolean) => () => void 
       >
         <MenuIcon fontSize="large" />
       </Button>
-      <Typography variant="h3" sx={{ textAlign: "center" }}>
+      <Typography variant="h3" sx={{ 
+            textAlign: "center",
+            color:"black",}}>
         Dragon Verifier
       </Typography>
         <Box sx={{ width: 40, height: 40, position: "relative" }}>
