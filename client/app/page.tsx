@@ -1,9 +1,8 @@
 //TODO Get rid of this, we should try to do as much rendering on the server as possible
 "use client";
 import {CheckinButton} from './checkin'
-import Header from './components/Header.tsx'
 import {Box, Typography, Container} from "@mui/material";
-
+import Header from './components/Header.tsx'
 
 export default function Home() {
   return (

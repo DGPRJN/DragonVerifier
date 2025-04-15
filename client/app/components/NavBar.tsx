@@ -3,7 +3,29 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { Drawer, Button, List, ListItem, ListItemButton, Typography, ListSubheader, Divider } from "@mui/material";
+import {
+  Drawer,
+  Button,
+  List,
+  ListItem,
+  ListItemButton,
+  Typography,
+  ListSubheader,
+  Divider,
+} from "@mui/material";
+
+const header = () => {
+    return (
+    <>
+      <Container maxWidth="lg" sx={{ bgcolor: "lightgray", px: 4, pt: 1 }}>
+      <Button onClick={toggleDrawer(true)}>Open Menu</Button>
+        <Typography variant="body1" sx={{ textAlign: "center" }}>
+          Random info idk man
+        </Typography>
+      </Container>
+    </>
+  );
+}
 
 // Prevents Next.js from rendering NavBar on the server
 const NavBar = dynamic(() => Promise.resolve(NavBarContent), { ssr: false });
@@ -17,8 +39,8 @@ function NavBarContent() {
 
   return (
     <>
-      <Button onClick={toggleDrawer(true)}>Open Menu</Button>
 
+      </header>
       <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
  <List>
     {[
