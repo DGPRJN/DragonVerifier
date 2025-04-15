@@ -1,10 +1,9 @@
 "use client";
-import { CheckinButton } from './checkin';
+import { CheckinButton, qrcvalidation } from './checkin';
 import { Typography, Container } from "@mui/material";
-import { qrcvalidation } from './checkin';
 
 const Page = () => {
-  const { isValid } = qrcvalidation(); // use inside component
+  const { isValid } = qrcvalidation();
 
   return (
     <Container maxWidth="lg" sx={{ bgcolor: "gray", padding: 4 }}>
@@ -16,7 +15,7 @@ const Page = () => {
           <Typography variant="body1" sx={{ textAlign: "center" }}>
             Click here to Check in
           </Typography>
-          <CheckinButton /> {/* 👈 This was missing */}
+          <CheckinButton/>
         </>
       ) : (
         <Typography

@@ -5,8 +5,8 @@ export const generate = async (
   if (!loginUrl) return null;
 
   const randomString = Math.random().toString(36).substring(2, 15);
-  const uniqueLoginUrl = `${loginUrl}?id=${randomString}`;
-  const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const uniqueLoginUrl = `${loginUrl}/?id=${randomString}`;
+  const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_LOCAL;
 
   try {
     if (element) {

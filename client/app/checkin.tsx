@@ -63,8 +63,7 @@ export const CheckinButton = () => {
 
 // Function to check QR Code Validity
 const checkQRCodeValidity = async (id: string) => {
-    const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_LOCAL;
-    const response = await fetch(`${API_BASE_URL}/api/v1/qr/${id}`);
+    const response = await fetch(`/api/v1/qr/${id}`);
 
     if (!response.ok) {
         return false;
