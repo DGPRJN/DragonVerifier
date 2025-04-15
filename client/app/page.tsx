@@ -1,10 +1,10 @@
 "use client";
-import { CheckinButton, qrcvalidation } from './checkin';
-import { Typography, Container } from "@mui/material";
+import {CheckinButton} from './checkin'
+import {Typography, Container} from "@mui/material";
+import { qrcvalidation } from './checkin.tsx';
 
-const Page = () => {
-  const { isValid } = qrcvalidation();
 
+export const Display = ({ isValid }: { isValid: boolean }) => {
   return (
     <Container maxWidth="lg" sx={{ bgcolor: "gray", padding: 4 }}>
       {isValid ? (
@@ -15,7 +15,6 @@ const Page = () => {
           <Typography variant="body1" sx={{ textAlign: "center" }}>
             Click here to Check in
           </Typography>
-          <CheckinButton/>
         </>
       ) : (
         <Typography
@@ -34,10 +33,23 @@ const Page = () => {
             margin: "20px auto",
           }}
         >
-          QR code or Link has expired or is invalid. Please scan a valid one.
+          QR code or Link has expired or is invalid. Please scan a valid QR code or visit a valid Link.
         </Typography>
       )}
     </Container>
+  );
+};
+
+const Page = () => {
+  const { isValid, isMounted } = qrcvalidation();
+
+  if (!isMounted) return null;
+
+  return (
+    <>
+      <Display isValid={isValid} />
+      {isValid && <CheckinButton/>}
+    </>
   );
 };
 
