@@ -52,14 +52,16 @@ const Page = () => {
 
   return (
     <div>
-      <Typography variant="h3" sx={{color: "black"}}>
+
+            {/*<Typography variant="h3" sx={{color: "black"}}>
         Courses
-      </Typography>
+      </Typography>*/}
       {courses.length === 0 ? (
         <>
           {/* No courses found, show sample table */}
-          <Typography sx={{color:"black"}}>No courses found. Displaying sample class records below:</Typography>
-          <TableContainer component={Paper}>
+          <Typography sx={{color:"black", pt:1, pb:1, pl:1}}>
+            No courses found. Displaying sample class records below:</Typography>
+          <TableContainer component={Paper} sx={{pl:1, pr:1}}>
             <Table>
               {/* Table Header */}
               <TableHead>

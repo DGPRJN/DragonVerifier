@@ -1,59 +1,67 @@
-//Need to move this to (user_side)
-//Need to try to get rid of "use client"
-
 "use client";
 import { Button, Container, Typography, Box } from "@mui/material";
 import React from "react";
 import login from "./login.tsx";
-//TODO Hook up Canvas API
-// Login oauth/login
-//Should be the log-in flow
-//Please Don't add any more non-UI code, add what you need to login.tsx
 
-
-// Function to check QR code validity
-// Page.tsx
-
-export const Account = () => {
-  return (
-    <Container maxWidth="lg" sx={{ bgcolor: "gray", padding: 4 }}>
-      <Typography variant="h4" sx={{ textAlign: "center" }}>
-        Dragon Verifier (User Side)
-      </Typography>
-      <Typography variant="body1" sx={{ textAlign: "center" }}>
-        Click here to login to Canvas
-      </Typography>
-    </Container>
-  );
-};
-
-//Please Don't add any more non-UI code, add what you need to login.tsx
 const LoginButton = () => {
   const handleClick = () => {
     login();
   };
 
   return (
-    <Container
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
+    <Box display="flex" justifyContent="center" sx={{ mt: 2 }}>
       <Button variant="contained" color="primary" onClick={handleClick}>
-        Login
+        Login with Canvas
       </Button>
-    </Container>
+    </Box>
   );
 };
 
 const Page = () => {
   return (
     <>
-      <Account />
-      <LoginButton />
+      <Container maxWidth="lg" sx={{ mt: 4 }}>
+        {/* Big bold text */}
+        <Typography
+          variant="h3"
+          sx={{
+            fontWeight: "bold",
+            textAlign: "center",
+            marginBottom: 4,
+            color: "black",
+          }}
+        >
+          Checking in
+        </Typography>
+
+        {/* Class name */}
+        <Typography
+          variant="body1"
+          sx={{
+            textAlign: "center",
+            marginBottom: 4,
+            color: "black",
+          }}
+        >
+          SP2025 CS 499-1C/499L-Q21 CSA 4990qC/499L-Q2/499L-Q21 Senior BS/BSA Capstone
+        </Typography>
+
+        {/* Login Button */}
+        <LoginButton />
+
+        {/* Text about location access */}
+        <Typography
+          variant="body2"
+          sx={{
+            textAlign: "center",
+            fontWeight: "bold",
+            color: "black",
+            marginTop: 2, // Adds spacing above the text
+          }}
+        >
+          Ensure you are in the correct classroom for your current session. Location access will be required.
+        </Typography>
+      </Container>
     </>
   );
 };

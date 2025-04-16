@@ -1,3 +1,4 @@
+
 "use client";
 
 import teamLogo from './Dragon_Verifier.png';
@@ -54,7 +55,5 @@ const Page = () => {
         ))}
       </Grid>
     </Container>
-  );
-};
 
 export default Page;
