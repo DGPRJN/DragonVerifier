@@ -154,13 +154,13 @@ async function generateAccessToken(user: CanvasUser, canvasApiToken: string) {
 }
 
 // local user object
-interface CanvasUser {
+export interface CanvasUser {
     id: number;
     name: string;
     global_id: string;
 }
 
-interface JwtPayload {
+export interface JwtPayload {
     user: CanvasUser;
     canvas_api_token: string;
 }
