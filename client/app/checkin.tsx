@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 
 export const CheckinButton = () => {
     const [location, setLocation] = useState<string | null>(null);
@@ -46,20 +46,36 @@ export const CheckinButton = () => {
     };
 
     return (
-        <div>
-            <Button variant="contained" color="primary" onClick={getLocation} sx={{
-                fontSize: '1.2rem',
-                width: '400px'}}>
+        <Box display="flex" flexDirection="column" alignItems="center">
+            <Button variant="contained" color="primary" onClick={getLocation} 
+                sx={{ fontSize: '1.2rem', width: '400px' }}>
                 Check-in
             </Button>
-            {isInside !== null && (
-                <p>
-                    {isInside
+            <Container maxWidth="lg" sx={{ mt: 4 }}>
+                <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    minHeight="80px"
+                >
+                    {isInside !== null && (
+                    <Typography
+                        variant="body1"
+                        sx={{
+                        textAlign: "center",
+                        color: isInside ? "green" : "red",
+                        fontWeight: "bold",
+                        maxWidth: "100%",
+                        }}
+                    >
+                        {isInside
                         ? "Thank you for using Dragon Verifier. You are now checked in and may close this page"
-                        : "Check in failed. Please ensure you are inside the geofence before attempting to check in again"}
-                </p>
-            )}
-        </div>
+                        : "Check-in failed. Please ensure you are inside the geofence before attempting to check in again"}
+                    </Typography>
+                    )}
+                </Box>
+            </Container>
+        </Box>
     );
 };
 
