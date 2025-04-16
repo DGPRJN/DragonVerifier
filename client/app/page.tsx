@@ -5,47 +5,65 @@ import { Box, Typography, Container } from "@mui/material";
 
 const Page = () => {
   return (
-    <>
-      <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Typography
-          variant="h3"
-          sx={{
-            fontWeight: "bold",
-            textAlign: "center",
-            marginBottom: 4, 
-            color: "black", 
-          }}
-        >
-          Checking in
-        </Typography>
+    <Container maxWidth="sm" sx={{ mt: 4, px: 2 }}> {/* maxWidth set to "sm" for mobile */}
+      {/* Big bold text for "Checking in" */}
+      <Typography
+        variant="h4" // Reduced variant for smaller screens
+        sx={{
+          fontWeight: "bold",
+          textAlign: "center",
+          marginBottom: 2,
+          color: "black",
+          fontSize: { xs: '1.5rem', md: '2rem' }, // Responsive font size
+        }}
+      >
+        Checking in
+      </Typography>
 
-        <Typography
-          variant="body1"
-          sx={{
-            textAlign: "center",
-            marginBottom: 4, 
-            color: "black",
-          }}
-        >
-          SP2025 CS 499-1C/499L-Q21 CSA 4990qC/499L-Q2/499L-Q21 Senior BS/BSA Capstone
-        </Typography>
+      {/* Class name in smaller regular text */}
+      <Typography
+        variant="body2" // Smaller variant for mobile
+        sx={{
+          textAlign: "center",
+          marginBottom: 3,
+          color: "black",
+        }}
+      >
+        SP2025 CS 499-1C/499L-Q21 CSA 4990qC/499L-Q2/499L-Q21 Senior BS/BSA Capstone
+      </Typography>
 
-        <Box display="flex" justifyContent="center" sx={{ marginBottom: 4 }}>
-          <CheckinButton />
-        </Box>
+      {/* Check-in button with padding */}
+      <Box
+        display="flex"
+        justifyContent="center"
+        sx={{
+          textAlign: "center",
+            fontSize: {
+              xs: "1.5rem",  // mobile
+              sm: "2rem",    // tablets
+              md: "2.5rem",  // small desktops
+              lg: "3rem",    // large screens
+            },
+          marginBottom: 2,
+          px: 3, // Adds padding inside the container
+          width: '100%', // Ensures consistent width for the container
+        }}
+      >
+        <CheckinButton />
+      </Box>
 
-        <Typography
-          variant="body2"
-          sx={{
-            textAlign: "center",
-            fontWeight: "bold",
-            color: "black",
-          }}
-        >
-          Ensure you are in the correct classroom for your current session. Location access will be required.
-        </Typography>
-      </Container>
-    </>
+      {/* Smaller bold text for location access message */}
+      <Typography
+        variant="caption" // Adjusted for mobile
+        sx={{
+          textAlign: "center",
+          fontWeight: "bold",
+          color: "black",
+        }}
+      >
+        Ensure you are in the correct classroom for your current session. Location access will be required.
+      </Typography>
+    </Container>
   );
 };
 
