@@ -157,7 +157,7 @@ function NavBarContent() {
           <ListSubheader>More</ListSubheader>
           {[
             { text: "About Us", href: "/about" },
-            { text: "Contacts", href: "/contact_us" },
+            { text: "Contact Us", href: "/contact_us" },
             { text: "Login/Account", href: "/login" },
           ].map(({ text, href }) => (
             <ListItem key={href} disablePadding>
