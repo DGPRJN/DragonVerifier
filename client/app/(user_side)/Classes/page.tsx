@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
 
 interface Course {
   id: string;
@@ -52,11 +52,13 @@ const Page = () => {
 
   return (
     <div>
-      <h1>Courses</h1>
+      <Typography variant="h3" sx={{color: "black"}}>
+        Courses
+      </Typography>
       {courses.length === 0 ? (
         <>
           {/* No courses found, show sample table */}
-          <p>No courses found. Displaying sample class records below:</p>
+          <Typography sx={{color:"black"}}>No courses found. Displaying sample class records below:</Typography>
           <TableContainer component={Paper}>
             <Table>
               {/* Table Header */}

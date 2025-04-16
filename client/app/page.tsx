@@ -6,7 +6,7 @@ import { Box, Typography, Container } from "@mui/material";
 const Page = () => {
   return (
     <>
-      <Container maxWidth="lg" sx={{ mt: 4 }}>
+      <Container maxWidth="lg" sx={{ mt: 4}}>
         <Typography
           variant="h3"
           sx={{
@@ -14,11 +14,9 @@ const Page = () => {
             textAlign: "center",
             marginBottom: 4, 
             color: "black", 
-          }}
-        >
+          }}>
           Checking in
         </Typography>
-
         <Typography
           variant="body1"
           sx={{
@@ -51,7 +49,7 @@ const Page = () => {
 
 export const Display = ({ isValid }: { isValid: boolean }) => {
   return (
-    <Container maxWidth="lg" sx={{ bgcolor: "gray", padding: 4 }}>
+    <Container maxWidth="lg" sx={{ bgcolor: "gray", pt: 4}}>
       {isValid ? (
         <>
           <Typography variant="h4" sx={{ textAlign: "center" }}>
