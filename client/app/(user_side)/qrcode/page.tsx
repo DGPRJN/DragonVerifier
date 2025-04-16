@@ -17,7 +17,7 @@ const GenerateQRCode = () => {
 
   const handleClick = async () => {
     setExpired(false);
-    setTimeLeft(60);
+    setTimeLeft(300);
     setQrGenerated(true);
     setGeneratedLink(null);
 

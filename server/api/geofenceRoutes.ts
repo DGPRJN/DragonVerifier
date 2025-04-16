@@ -18,7 +18,7 @@ export const setWebSocketServer = (server: WebSocketServer) => {
 // =============
 
 // Load GeoJSON geofences
-const geojsonPath = path.resolve(__dirname, "../api/hhb/102.geojson");
+const geojsonPath = path.resolve(__dirname, "../api/ch/301.geojson");
 const geojsonData = JSON.parse(fs.readFileSync(geojsonPath, "utf-8"));
 console.log("✅ GeoJSON file loaded from:", geojsonPath);
 

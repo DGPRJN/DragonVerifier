@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 
 // QR Code expire time (set to 1 minute at the moment)
 // Set this time to whatever you need for ease of use when testing
-const expire_time = 60000;
+const expire_time = 300000;
 
 const router = express.Router();
 
