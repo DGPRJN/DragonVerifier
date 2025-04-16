@@ -1,9 +1,16 @@
 import express from "express";
 import { connectDB } from "./db"; // Import the database connection
 import cors from "cors";
-
+import http from "http";
+import { WebSocketServer } from "ws";
 const app = express();
 const port = process.env.EXPRESS_PORT;
+
+// =============================
+const server = http.createServer(app);
+const wss = new WebSocketServer({ server });
+// ==============================
+
 
 const rootApi = "/api/v1";
 
@@ -13,7 +20,7 @@ connectDB(); // establish connection to MongoDB
 
 app.use(
     cors({
-        origin: "http://127.0.0.1:3000", // TODO: Probably shouldn't do this...
+        origin: "*", // TODO: Probably shouldn't do this...
         methods: ["GET", "POST", "OPTIONS"],
         credentials: true,
     })
@@ -40,7 +47,7 @@ app.options("*", (req, res) => {
 import courses from "./api/courses";
 app.use(`${rootApi}/courses`, courses);
 
-import geofenceRoutes from "./api/geofenceRoutes";
+import geofenceRoutes, { setWebSocketServer } from "./api/geofenceRoutes";
 app.use(`${rootApi}/geofence`, geofenceRoutes);
 
 import oauthRouter from "./api/oauth";
@@ -49,7 +56,23 @@ app.use(`${rootApi}/oauth`, oauthRouter);
 import qrCodes from "./api/qrCodes";
 app.use(`${rootApi}/qr`, qrCodes);
 
-app.listen(port, () => {
+
+// ========================
+
+setWebSocketServer(wss);
+app.use("/api/v1/geofence", geofenceRoutes);
+
+wss.on("connection", (ws) => {
+    console.log("✅ WebSocket client connected");
+
+    ws.on("close", () => {
+        console.log("❌ WebSocket client disconnected");
+    });
+});
+
+// =========================
+
+server.listen(port, () => {           // Change back after demo maybe to app.listen
     console.log(`Server started at http://localhost:${port}`);
 });
 
