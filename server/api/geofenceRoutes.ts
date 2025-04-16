@@ -4,8 +4,18 @@ import path from "path";
 import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
 import { point } from "@turf/helpers";
 import { Feature, Polygon } from "geojson";
+import { WebSocketServer } from "ws";
+
 
 const router = express.Router();
+
+// ============
+let wss: WebSocketServer | null = null;
+
+export const setWebSocketServer = (server: WebSocketServer) => {
+    wss = server;
+};
+// =============
 
 // Load GeoJSON geofences
 const geojsonPath = path.resolve(__dirname, "../api/hhb/102.geojson");
@@ -29,6 +39,29 @@ router.post("/check-location", (req: Request, res: Response) => {
         (feature: Feature<Polygon>) =>
             booleanPointInPolygon(userPoint, feature.geometry)
     );
+
+
+    // ======================
+    // Broadcast to WebSocket clients
+    if (wss) {
+        const payload = {
+            type: "checkin_attempt",
+            data: {
+                latitude,
+                longitude,
+                timestamp: new Date().toISOString(),
+                success: insideGeofence,
+            },
+        };
+
+        wss.clients.forEach((client) => {
+            if (client.readyState === 1) {
+                client.send(JSON.stringify(payload));
+            }
+        });
+    }
+    // ======================
+
 
     res.json({ insideGeofence });
 });
