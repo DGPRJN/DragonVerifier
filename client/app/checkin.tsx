@@ -70,7 +70,7 @@ export const CheckinButton = () => {
                     >
                         {isInside
                         ? "Thank you for using Dragon Verifier. You are now checked in and may close this page"
-                        : "Check-in failed. Please ensure you are inside the geofence before attempting to check in again"}
+                        : "Check-in failed. Please ensure you are inside the classroom before attempting to check in again"}
                     </Typography>
                     )}
                 </Box>

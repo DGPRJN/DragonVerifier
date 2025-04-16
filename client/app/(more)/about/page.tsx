@@ -22,9 +22,8 @@ const Page = () =>{
             marginBottom: 4, 
             color: "black",
           }}>
-Dragon Verifier is an application that makes taking attendance for college classes easier for students and professors. The software will be able to take attendance for a class by allowing students to "check-in" to a class using their mobile device. It automatically connects to the Canvas API to update the gradebook with the attendance information, streamlining the attendance process. Professors can configure attendance settings for each class to suite their needs. One of these options is geolocation, which will verify a students is physically present before verifying attendance. With Dragon Verifier, we hope to develop a tool that is more secure and streamlined than traditional attendance-taking practices.
+Dragon Verifier is a software solution designed to simplify and modernize attendance tracking for college classes. The application enables students to conveniently check in to class using their mobile devices, while seamlessly integrating with the Canvas API to automatically update attendance records in the gradebook. Professors can customize attendance settings for each course, including features such as geolocation verification to ensure students are physically present before confirming their attendance. With Dragon Verifier, our goal is to provide a secure, efficient, and user-friendly alternative to traditional attendance methods.
         </Typography>
-
       </Container>
     </div>
   );
