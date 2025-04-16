@@ -1,6 +1,8 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import cookieParser from "cookie-parser";
+import { JWEInvalid } from "jose/errors";
+import next from "next";
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -23,11 +25,25 @@ const scopes = [
     "url:PUT|/api/v1/courses/:course_id/assignments/:id",
 ];
 
+const frontend = process.env.NEXT_PUBLIC_FRONTEND_URL;
+
 // Provides frontend with the correct login url
 router.get("/login", async (req: Request, res) => {
     const loginUri = generateLoginRedirect(req);
 
     res.json({ redirect: loginUri });
+});
+
+router.get("/logout", async (req, res) => {
+    const cookie = req.cookies.token as string;
+
+    if (!cookie || typeof cookie !== "string") {
+        res.status(400).json({ error: "Invalid or missing token" });
+        return;
+    }
+
+    res.clearCookie("token");
+    res.json({ success: true });
 });
 
 // Consumes the OAuth2 Redirect URI and grabs the authorization token
@@ -50,34 +66,46 @@ router.get("/redirect", async (req: Request, res: Response) => {
             "Content-Type": "application/json",
         },
     }).then(async (fRes) => {
+        if (!fRes.ok) {
+            res.redirect(`${frontend}/login/redirect?success=false`);
+            return;
+        }
+
         const data = await fRes.json();
 
         const token = data.access_token;
         const user: CanvasUser = data.user;
 
-        console.log(data);
-
         const jwt = await generateAccessToken(user, token);
 
-        console.log(jwt);
-
         res.cookie("token", jwt);
-        res.json({ success: true });
+        res.redirect(`${frontend}/login/redirect?success=true`);
     });
 });
 
 router.get("/whoami", async (req: Request, res: Response) => {
-    const cookie = req.cookies.token;
+    const cookie = req.cookies.token as string;
 
     let jose = await import("jose");
 
     const secret = jose.base64url.decode(process.env.JWT_TOKEN_SECRET!);
-    const jwt = await jose.jwtDecrypt(cookie, secret);
+    if (!cookie || typeof cookie !== "string") {
+        res.status(400).json({ error: "Invalid or missing token" });
+        return;
+    }
+
+    let jwt;
+    try {
+        jwt = await jose.jwtDecrypt(cookie, secret);
+    } catch (error) {
+        res.status(400).json({ error: "Failed to decrypt token" });
+        return;
+    }
 
     const payload = jwt.payload.payload as JwtPayload;
-    const token = payload.access_token;
+    const token = payload.canvas_api_token;
 
-    fetch(`${canvasUrl}/api/v1/courses`, {
+    fetch(`${canvasUrl}/api/v1/users/${payload.user.id}/profile`, {
         headers: { Authorization: `Bearer ${token}` },
     }).then(async (fRes) => {
         const data = await fRes.json();
@@ -115,10 +143,10 @@ function generateRedirectUri(req: Request) {
 async function generateAccessToken(user: CanvasUser, canvasApiToken: string) {
     const payload: JwtPayload = {
         user,
-        access_token: canvasApiToken,
+        canvas_api_token: canvasApiToken,
     };
 
-    // we have to import jose like this because it is not CJS
+    // we have to import jose like this because it is not CommonJS >:(
     let jose = await import("jose");
 
     const secret = jose.base64url.decode(process.env.JWT_TOKEN_SECRET!);
@@ -140,7 +168,7 @@ interface CanvasUser {
 
 interface JwtPayload {
     user: CanvasUser;
-    access_token: string;
+    canvas_api_token: string;
 }
 
 export default router;

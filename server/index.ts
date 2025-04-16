@@ -13,7 +13,7 @@ connectDB(); // establish connection to MongoDB
 
 app.use(
     cors({
-        origin: "*", // TODO: Probably shouldn't do this...
+        origin: "http://127.0.0.1:3000", // TODO: Probably shouldn't do this...
         methods: ["GET", "POST", "OPTIONS"],
         credentials: true,
     })
