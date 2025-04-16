@@ -45,11 +45,19 @@ const GenerateQRCode = () => {
     }, 1000);
   };
 
+  // Clears timer when state is changed
   useEffect(() => {
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, []);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+
+    setTimeLeft(null);
+    setExpired(false);
+    setQrGenerated(false);
+    setGeneratedLink(null);
+  }, [selectedType]);
+  
 
   return (
     <Container
@@ -82,19 +90,19 @@ const GenerateQRCode = () => {
       )}
 
       {selectedType === "link" && generatedLink && (
-        <Typography mt={2} variant="body2" color="white">
+        <Typography mt={2} variant="body2" color="white" sx={{ fontSize: "1.2rem"}}>
           Generated Link: <a href={generatedLink} style={{ color: "green" }} target="_blank">{generatedLink}</a>
         </Typography>
       )}
 
       {timeLeft !== null && !expired && (
-        <Typography variant="body2" color="white" mt={1}>
+        <Typography variant="body2" color="black" mt={1} sx={{ fontSize: "1.2rem"}}>
           {selectedType === "qr" ? "QR Code" : "Link"} expires in: {timeLeft} second{timeLeft !== 1 ? "s" : ""}
         </Typography>
       )}
 
       {expired && (
-        <Typography variant="body2" color="error" mt={1}>
+        <Typography variant="body2" color="error" mt={1} sx={{ fontSize: "1.2rem"}}>
           {selectedType === "qr" ? "QR Code" : "Link"} has expired. Please generate a new one.
         </Typography>
       )}
