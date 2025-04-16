@@ -25,6 +25,20 @@ const Page = () => {
       attendanceRecord: "21/25",
       attendancePercentage: "84%", // Derived percentage
     },
+    {
+      className: "SP2025 MA 227-6D Calculus III",
+      instructor: "Marius Nkashama",
+      meetingTime: "MW 2:30-4:20",
+      attendanceRecord: "18/20",
+      attendancePercentage: "90%", // Derived percentage
+    },
+    {
+      className: "SP2025 MA 360/560 Scientific Programming",
+      instructor: "Carmeliza Navasca",
+      meetingTime: "TH 9:30-10:45",
+      attendanceRecord: "20/24",
+      attendancePercentage: "83%", // Derived percentage
+    },
   ];
 
   useEffect(() => {
@@ -52,16 +66,13 @@ const Page = () => {
 
   return (
     <div>
-
-            {/*<Typography variant="h3" sx={{color: "black"}}>
-        Courses
-      </Typography>*/}
       {courses.length === 0 ? (
         <>
           {/* No courses found, show sample table */}
-          <Typography sx={{color:"black", pt:1, pb:1, pl:1}}>
-            No courses found. Displaying sample class records below:</Typography>
-          <TableContainer component={Paper} sx={{pl:1, pr:1}}>
+          <Typography sx={{ color: "black", pt: 1, pb: 1, pl: 1 }}>
+            No courses found. Displaying sample class records below:
+          </Typography>
+          <TableContainer component={Paper} sx={{ pl: 1, pr: 1 }}>
             <Table>
               {/* Table Header */}
               <TableHead>
