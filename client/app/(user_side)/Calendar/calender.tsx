@@ -9,13 +9,93 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 
 //Apparently we are using moment?
 const localizer = momentLocalizer(moment);
+//This is all just for demo
+type Event = {
+  title: string;
+  start: Date;
+  end: Date;
+};
+
+    function generateRecurringEvents({
+      title,
+      startDate,
+      endDate,
+      startTime, // "10:00"
+      endTime,   // "11:00"
+      days = "MWF", // "MWF" or "TTh"
+      count = 10,
+    }: {
+      title: string;
+      startDate: Date;
+      endDate: Date;
+      startTime: string;
+      endTime: string;
+      days: "MWF" | "TTh";
+      count: number;
+    }): Event[] {
+      const dayMap = {
+        MWF: [1, 3, 5], // Monday, Wednesday, Friday
+        TTh: [2, 4],    // Tuesday, Thursday
+      };
+
+      const allowedDays = dayMap[days];
+      const events: Event[] = [];
+
+      const current = new Date(startDate);
+
+      while (current <= endDate && events.length < count) {
+        if (allowedDays.includes(current.getDay())) {
+          const [startHour, startMin] = startTime.split(":").map(Number);
+          const [endHour, endMin] = endTime.split(":").map(Number);
+
+          const eventStart = new Date(current);
+          eventStart.setHours(startHour, startMin, 0, 0);
+
+          const eventEnd = new Date(current);
+          eventEnd.setHours(endHour, endMin, 0, 0);
+
+          events.push({
+            title,
+            start: new Date(eventStart),
+            end: new Date(eventEnd),
+          });
+        }
+
+        // Move to the next day
+        current.setDate(current.getDate() + 1);
+      }
+
+      return events;
+    }
 
 const events = [
-  {
-    title: 'Some Class Event',
-    start: new Date('2025-04-12T13:45:00-05:00'),
-    end: new Date('2025-04-12T14:00:00-05:00')
-  },
+  ...generateRecurringEvents({
+    title: "CS 499 Capstone",
+    startDate: new Date("2025-01-13"),
+    endDate: new Date("2025-05-01"),
+    startTime: "10:10",
+    endTime: "11:00",
+    days: "MWF",
+    count: 300,
+  }),
+  ...generateRecurringEvents({
+    title: "CS 301 Algorithms",
+    startDate: new Date("2025-01-13"),
+    endDate: new Date("2025-05-01"),
+    startTime: "13:00",
+    endTime: "14:15",
+    days: "TTh",
+    count: 300,
+  }),
+  ...generateRecurringEvents({
+    title: "CS 210 Systems",
+    startDate: new Date("2025-01-13"),
+    endDate: new Date("2025-05-01"),
+    startTime: "08:30",
+    endTime: "09:45",
+    days: "MWF",
+    count: 300,
+  }),
 ];
 
 const calendarStyle = {

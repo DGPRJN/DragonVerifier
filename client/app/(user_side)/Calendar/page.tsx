@@ -8,7 +8,7 @@ const Page = () => {
 
   return (
 
-    <Container maxWidth="lg" disableGutters sx={{ bgcolor: "white", borderRadius: "10px" }}>
+    <Container maxWidth="lg" disableGutters sx={{ bgcolor: "white", borderRadius: "10px", padding:1 }}>
       <Calendar/>
     </Container>
   );
