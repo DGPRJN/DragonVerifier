@@ -23,8 +23,7 @@ const Page = () => {
             textAlign: "center",
             marginBottom: 4, 
             color: "black",
-          }}
-        >
+          }}>
           SP2025 CS 499-1C/499L-Q21 CSA 4990qC/499L-Q2/499L-Q21 Senior BS/BSA Capstone
         </Typography>
 
