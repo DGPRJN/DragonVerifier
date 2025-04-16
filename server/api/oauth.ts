@@ -25,11 +25,25 @@ const scopes = [
     "url:PUT|/api/v1/courses/:course_id/assignments/:id",
 ];
 
+const frontend = process.env.NEXT_PUBLIC_FRONTEND_URL;
+
 // Provides frontend with the correct login url
 router.get("/login", async (req: Request, res) => {
     const loginUri = generateLoginRedirect(req);
 
     res.json({ redirect: loginUri });
+});
+
+router.get("/logout", async (req, res) => {
+    const cookie = req.cookies.token as string;
+
+    if (!cookie || typeof cookie !== "string") {
+        res.status(400).json({ error: "Invalid or missing token" });
+        return;
+    }
+
+    res.clearCookie("token");
+    res.json({ success: true });
 });
 
 // Consumes the OAuth2 Redirect URI and grabs the authorization token
@@ -52,21 +66,20 @@ router.get("/redirect", async (req: Request, res: Response) => {
             "Content-Type": "application/json",
         },
     }).then(async (fRes) => {
+        if (!fRes.ok) {
+            res.redirect(`${frontend}/login/redirect?success=false`);
+            return;
+        }
+
         const data = await fRes.json();
 
         const token = data.access_token;
         const user: CanvasUser = data.user;
 
-        console.log(data);
-
         const jwt = await generateAccessToken(user, token);
 
-        console.log(jwt);
-
-        const frontend = process.env.NEXT_PUBLIC_FRONTEND_URL;
-
         res.cookie("token", jwt);
-        res.redirect(`${frontend}/login`);
+        res.redirect(`${frontend}/login/redirect?success=true`);
     });
 });
 

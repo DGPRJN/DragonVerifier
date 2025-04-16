@@ -1,19 +1,42 @@
 "use client";
-import { Button, Container, Typography, Box } from "@mui/material";
-import React from "react";
+import {
+    Button,
+    Container,
+    Typography,
+    Box,
+    CircularProgress,
+    Alert,
+} from "@mui/material";
+import React, { useState } from "react";
 import login from "./login.tsx";
 
 const LoginButton = () => {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
+
     const handleClick = () => {
-        login();
+        setLoading(true);
+        const success = login();
+
+        if (!success) {
+            setLoading(false);
+            setError(true);
+        }
     };
 
+    if (loading) return <CircularProgress />;
+
     return (
-        <Box display="flex" justifyContent="center" sx={{ mt: 2 }}>
+        <>
+            {error ? (
+                <Alert severity="error">Something went wrong...</Alert>
+            ) : (
+                ""
+            )}
             <Button variant="contained" color="primary" onClick={handleClick}>
                 Login with Canvas
             </Button>
-        </Box>
+        </>
     );
 };
 
@@ -48,7 +71,16 @@ const Page = () => {
                 </Typography>
 
                 {/* Login Button */}
-                <LoginButton />
+                <Box
+                    display="flex"
+                    flexDirection={"column"}
+                    justifyContent="center"
+                    alignItems={"center"}
+                    gap={"1em"}
+                    sx={{ mt: 2 }}
+                >
+                    <LoginButton />
+                </Box>
 
                 {/* Text about location access */}
                 <Typography
