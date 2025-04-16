@@ -140,60 +140,54 @@ function NavBarContent() {
         setOpen((prevOpen) => !prevOpen); // Toggle the drawer state
     };
 
-    return (
-        <>
-            <Header toggleDrawer={toggleDrawer} />
-            <Drawer
-                anchor="left"
-                open={open}
-                onClose={() => toggleDrawer(false)} // ensure this closes the drawer
-                PaperProps={{
-                    sx: {
-                        mt: HEADER_HEIGHT, // drawer appears below header
-                        height: `calc(100% - ${HEADER_HEIGHT})`,
-                    },
-                }}
-                ModalProps={{ hideBackdrop: true }}
-            >
-                <List>
-                    {[
-                        { text: "Home", href: "/" },
-                        { text: "Calendar", href: "/Calendar" },
-                        { text: "Classes", href: "/Classes" },
-                    ].map(({ text, href }) => (
-                        <ListItem key={`${href}-${text}`} disablePadding>
-                            <Link href={href} passHref legacyBehavior>
-                                <ListItemButton
-                                    component="a"
-                                    onClick={toggleDrawer(false)}
-                                >
-                                    <Typography>{text}</Typography>
-                                </ListItemButton>
-                            </Link>
-                        </ListItem>
-                    ))}
-                    <Divider />
-                    <ListSubheader>More</ListSubheader>
-                    {[
-                        { text: "About Us", href: "/about" },
-                        { text: "Contact Us", href: "/contact_us" },
-                        { text: "Login/Account", href: "/login" },
-                    ].map(({ text, href }) => (
-                        <ListItem key={href} disablePadding>
-                            <Link href={href} passHref legacyBehavior>
-                                <ListItemButton
-                                    component="a"
-                                    onClick={toggleDrawer(false)}
-                                >
-                                    <Typography>{text}</Typography>
-                                </ListItemButton>
-                            </Link>
-                        </ListItem>
-                    ))}
-                </List>
-            </Drawer>
-        </>
-    );
+  return (
+    <>
+      <Header toggleDrawer={toggleDrawer} />
+      <Drawer
+        anchor="left"
+        open={open}
+        onClose={() => toggleDrawer(false)} // ensure this closes the drawer
+        PaperProps={{
+          sx: {
+            mt: HEADER_HEIGHT, // drawer appears below header
+            height: `calc(100% - ${HEADER_HEIGHT})`,
+          },
+        }}
+        ModalProps={{ hideBackdrop: true }}
+      >
+        <List>
+          {[
+            { text: "Home", href: "/" },
+            { text: "Calendar", href: "/Calendar" },
+            { text: "Classes", href: "/Classes" },
+          ].map(({ text, href }) => (
+            <ListItem key={`${href}-${text}`} disablePadding>
+              <Link href={href} passHref legacyBehavior>
+                <ListItemButton component="a" onClick={toggleDrawer(false)}>
+                  <Typography>{text}</Typography>
+                </ListItemButton>
+              </Link>
+            </ListItem>
+          ))}
+          <Divider />
+          <ListSubheader>More</ListSubheader>
+          {[
+            { text: "About Us", href: "/about" },
+            { text: "Contact Us", href: "/contact_us" },
+            { text: "Login/Account", href: "/login" },
+          ].map(({ text, href }) => (
+            <ListItem key={href} disablePadding>
+              <Link href={href} passHref legacyBehavior>
+                <ListItemButton component="a" onClick={toggleDrawer(false)}>
+                  <Typography>{text}</Typography>
+                </ListItemButton>
+              </Link>
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
+    </>
+  );
 }
 
 // Export with dynamic import if needed
