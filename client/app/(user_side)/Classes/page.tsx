@@ -52,6 +52,7 @@ const Page = () => {
 
   return (
     <div>
+
             {/*<Typography variant="h3" sx={{color: "black"}}>
         Courses
       </Typography>*/}

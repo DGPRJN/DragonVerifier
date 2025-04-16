@@ -1,9 +1,13 @@
 "use client";
 
-import { CheckinButton } from './checkin';
+import { CheckinButton, qrcvalidation } from './checkin';
 import { Box, Typography, Container } from "@mui/material";
 
 const Page = () => {
+  const { isValid, isMounted } = qrcvalidation();
+
+  if (!isMounted) return null;
+  
   return (
     <>
       <Container maxWidth="lg" sx={{ mt: 4}}>
@@ -26,11 +30,9 @@ const Page = () => {
           }}>
           SP2025 CS 499-1C/499L-Q21 CSA 4990qC/499L-Q2/499L-Q21 Senior BS/BSA Capstone
         </Typography>
-
         <Box display="flex" justifyContent="center" sx={{ marginBottom: 4 }}>
-          <CheckinButton />
+          <Display isValid={isValid} />
         </Box>
-
         <Typography
           variant="body2"
           sx={{
@@ -48,29 +50,21 @@ const Page = () => {
 
 export const Display = ({ isValid }: { isValid: boolean }) => {
   return (
-    <Container maxWidth="lg" sx={{ bgcolor: "gray", pt: 4}}>
+    <Container maxWidth="lg" sx={{ bgcolor: "white", pt: 4}}>
       {isValid ? (
         <>
-          <Typography variant="h4" sx={{ textAlign: "center" }}>
-            Dragon Verifier (Student View)
-          </Typography>
-          <Typography variant="body1" sx={{ textAlign: "center" }}>
-            Click here to Check in
-          </Typography>
+        <Box display="flex" justifyContent="center">
+          <CheckinButton />
+        </Box>
         </>
       ) : (
         <Typography
           variant="h6"
-          color="error"
           sx={{
             textAlign: "center",
-            backgroundColor: "Green",
-            color: "White",
-            padding: 2,
-            borderRadius: 2,
-            boxShadow: 2,
+            color: "Red",
             fontWeight: "bold",
-            fontSize: "1.25rem",
+            fontSize: "1.00rem",
             maxWidth: "80%",
             margin: "20px auto",
           }}
