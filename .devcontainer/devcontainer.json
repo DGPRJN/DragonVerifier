@@ -1,0 +1,15 @@
+{
+    "name": "DragonVerifier",
+    "image": "mcr.microsoft.com/devcontainers/universal:2",
+    "portsAttributes": {
+        "3000": {
+            "label": "Frontend",
+            "onAutoForward": "notify"
+        },
+        "3001": {
+            "label": "Backend",
+            "onAutoForward": "notify"
+        }
+    },
+    "forwardPorts": ["3000:3000", "3001:3001"]
+}
