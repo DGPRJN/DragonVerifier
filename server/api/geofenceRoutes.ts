@@ -6,7 +6,6 @@ import { point } from "@turf/helpers";
 import { Feature, Polygon } from "geojson";
 import { WebSocketServer } from "ws";
 
-
 const router = express.Router();
 
 // ============
@@ -18,7 +17,7 @@ export const setWebSocketServer = (server: WebSocketServer) => {
 // =============
 
 // Load GeoJSON geofences
-const geojsonPath = path.resolve(__dirname, "../api/hhb/102.geojson");
+const geojsonPath = path.resolve(__dirname, "../api/ch/301.geojson");
 const geojsonData = JSON.parse(fs.readFileSync(geojsonPath, "utf-8"));
 console.log("✅ GeoJSON file loaded from:", geojsonPath);
 
@@ -40,7 +39,6 @@ router.post("/check-location", (req: Request, res: Response) => {
             booleanPointInPolygon(userPoint, feature.geometry)
     );
 
-
     // ======================
     // Broadcast to WebSocket clients
     if (wss) {
@@ -61,7 +59,6 @@ router.post("/check-location", (req: Request, res: Response) => {
         });
     }
     // ======================
-
 
     res.json({ insideGeofence });
 });

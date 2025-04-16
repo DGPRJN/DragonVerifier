@@ -6,11 +6,12 @@ import { WebSocketServer } from "ws";
 const app = express();
 const port = process.env.EXPRESS_PORT;
 
+const frontEndUrl = process.env.NEXT_PUBLIC_FRONTEND_URL;
+
 // =============================
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 // ==============================
-
 
 const rootApi = "/api/v1";
 
@@ -20,7 +21,7 @@ connectDB(); // establish connection to MongoDB
 
 app.use(
     cors({
-        origin: "*", // TODO: Probably shouldn't do this...
+        origin: frontEndUrl, // TODO: Probably shouldn't do this...
         methods: ["GET", "POST", "OPTIONS"],
         credentials: true,
     })
@@ -56,7 +57,6 @@ app.use(`${rootApi}/oauth`, oauthRouter);
 import qrCodes from "./api/qrCodes";
 app.use(`${rootApi}/qr`, qrCodes);
 
-
 // ========================
 
 setWebSocketServer(wss);
@@ -72,7 +72,8 @@ wss.on("connection", (ws) => {
 
 // =========================
 
-server.listen(port, () => {           // Change back after demo maybe to app.listen
+server.listen(port, () => {
+    // Change back after demo maybe to app.listen
     console.log(`Server started at http://localhost:${port}`);
 });
 
