@@ -1,6 +1,8 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 import cookieParser from "cookie-parser";
+import { JWEInvalid } from "jose/errors";
+import next from "next";
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -61,23 +63,36 @@ router.get("/redirect", async (req: Request, res: Response) => {
 
         console.log(jwt);
 
+        const frontend = process.env.NEXT_PUBLIC_FRONTEND_URL;
+
         res.cookie("token", jwt);
-        res.json({ success: true });
+        res.redirect(`${frontend}/login`);
     });
 });
 
 router.get("/whoami", async (req: Request, res: Response) => {
-    const cookie = req.cookies.token;
+    const cookie = req.cookies.token as string;
 
     let jose = await import("jose");
 
     const secret = jose.base64url.decode(process.env.JWT_TOKEN_SECRET!);
-    const jwt = await jose.jwtDecrypt(cookie, secret);
+    if (!cookie || typeof cookie !== "string") {
+        res.status(400).json({ error: "Invalid or missing token" });
+        return;
+    }
+
+    let jwt;
+    try {
+        jwt = await jose.jwtDecrypt(cookie, secret);
+    } catch (error) {
+        res.status(400).json({ error: "Failed to decrypt token" });
+        return;
+    }
 
     const payload = jwt.payload.payload as JwtPayload;
-    const token = payload.access_token;
+    const token = payload.canvas_api_token;
 
-    fetch(`${canvasUrl}/api/v1/courses`, {
+    fetch(`${canvasUrl}/api/v1/users/${payload.user.id}/profile`, {
         headers: { Authorization: `Bearer ${token}` },
     }).then(async (fRes) => {
         const data = await fRes.json();
@@ -115,10 +130,10 @@ function generateRedirectUri(req: Request) {
 async function generateAccessToken(user: CanvasUser, canvasApiToken: string) {
     const payload: JwtPayload = {
         user,
-        access_token: canvasApiToken,
+        canvas_api_token: canvasApiToken,
     };
 
-    // we have to import jose like this because it is not CJS
+    // we have to import jose like this because it is not CommonJS >:(
     let jose = await import("jose");
 
     const secret = jose.base64url.decode(process.env.JWT_TOKEN_SECRET!);
@@ -140,7 +155,7 @@ interface CanvasUser {
 
 interface JwtPayload {
     user: CanvasUser;
-    access_token: string;
+    canvas_api_token: string;
 }
 
 export default router;
