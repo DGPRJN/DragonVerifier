@@ -1,9 +1,53 @@
 "use client";
-import {CheckinButton} from './checkin'
-import {Box, Typography, Container} from "@mui/material";
-import Header from './components/Header.tsx'
-import { qrcvalidation } from './checkin.tsx';
 
+import { CheckinButton } from './checkin';
+import { Box, Typography, Container } from "@mui/material";
+
+const Page = () => {
+  return (
+    <>
+      <Container maxWidth="lg" sx={{ mt: 4 }}>
+        <Typography
+          variant="h3"
+          sx={{
+            fontWeight: "bold",
+            textAlign: "center",
+            marginBottom: 4, 
+            color: "black", 
+          }}
+        >
+          Checking in
+        </Typography>
+
+        <Typography
+          variant="body1"
+          sx={{
+            textAlign: "center",
+            marginBottom: 4, 
+            color: "black",
+          }}
+        >
+          SP2025 CS 499-1C/499L-Q21 CSA 4990qC/499L-Q2/499L-Q21 Senior BS/BSA Capstone
+        </Typography>
+
+        <Box display="flex" justifyContent="center" sx={{ marginBottom: 4 }}>
+          <CheckinButton />
+        </Box>
+
+        <Typography
+          variant="body2"
+          sx={{
+            textAlign: "center",
+            fontWeight: "bold",
+            color: "black",
+          }}
+        >
+          Ensure you are in the correct classroom for your current session. Location access will be required.
+        </Typography>
+      </Container>
+    </>
+  );
+};
 
 export const Display = ({ isValid }: { isValid: boolean }) => {
   return (
@@ -38,26 +82,6 @@ export const Display = ({ isValid }: { isValid: boolean }) => {
         </Typography>
       )}
     </Container>
-  );
-};
-
-const Page = () => {
-  const { isValid, isMounted } = qrcvalidation();
-
-  if (!isMounted) return null;
-
-  return (
-    <>
-      <Container maxWidth="lg" sx={{ bgcolor: "gray", padding: 4 }}>
-        <Typography variant="h4" sx={{ textAlign: "center" }}>Dragon Verifier (User Side)</Typography>
-        <Typography variant="Body" sx={{ textAlign: "center" }}>I think here we should have a general check-in button that detects the class and makes a record (if applicable, for example if the class takes a qr code this should be grayed out)</Typography>
-        <Box display="flex" justifyContent="center">
-        <CheckinButton/>
-        </Box>
-      </Container>
-      <Display isValid={isValid} />
-      {isValid && <CheckinButton/>}
-    </>
   );
 };
 

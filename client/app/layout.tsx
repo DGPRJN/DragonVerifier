@@ -4,18 +4,6 @@ import "./globals.css";
 import NavBar from './components/NavBar';
 import { createTheme, ThemeProvider, Typography } from "@mui/material";
 
-const theme = createTheme({
-  typography: {
-    h3: {
-      fontSize: "3rem",
-      fontWeight: 500,
-      fontFamily: "sans-serif",
-      fontStyle: "italic",
-      color: "black",  // Use 'color' instead of 'fontColor'
-    },
-  },
-});
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
