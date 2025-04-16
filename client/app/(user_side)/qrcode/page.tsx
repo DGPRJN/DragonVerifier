@@ -75,10 +75,20 @@ const GenerateQRCode = () => {
         value={selectedType}
         onChange={(e) => setSelectedType(e.target.value as "qr" | "link")}
       >
-        <FormControlLabel value="qr" control={<Radio />} label="QR Code" />
-        <FormControlLabel value="link" control={<Radio />} label="Link" />
+        <FormControlLabel
+          value="qr"
+          control={<Radio />}
+          label="QR Code"
+          sx={{ color: "black" }}
+        />
+        <FormControlLabel
+          value="link"
+          control={<Radio />}
+          label="Link"
+          sx={{ color: "black" }}
+        />
       </RadioGroup>
-
+      
       <Button variant="contained" color="primary" onClick={handleClick}>
         Generate {selectedType === "qr" ? "QR Code" : "Link"}
       </Button>
