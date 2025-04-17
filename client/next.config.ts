@@ -4,7 +4,6 @@ const nextConfig = {
     //     const backendUrl = isProd
     //         ? process.env.NEXT_PUBLIC_BACKEND_URL
     //         : process.env.NEXT_PUBLIC_BACKEND_LOCAL;
-
     //     return [
     //         {
     //             source: "/api/:path*",
@@ -12,9 +11,6 @@ const nextConfig = {
     //         },
     //     ];
     // },
-
 };
 
 export default nextConfig;
-
-

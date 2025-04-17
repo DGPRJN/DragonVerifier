@@ -11,5 +11,13 @@
             "onAutoForward": "notify"
         }
     },
-    "forwardPorts": ["3000:3000", "3001:3001"]
+    "forwardPorts": ["3000:3000", "3001:3001"],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "esbenp.prettier-vscode",
+                "EditorConfig.EditorConfig"
+            ]
+        }
+    }
 }

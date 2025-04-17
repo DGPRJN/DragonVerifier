@@ -8,17 +8,18 @@ import {
     Alert,
 } from "@mui/material";
 import React, { useState } from "react";
-import login from "./login.tsx";
+import { useAuth } from "../hooks/auth-provider.tsx";
 
 const LoginButton = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
+    const auth = useAuth();
 
     const handleClick = () => {
         setLoading(true);
-        const success = login();
-
-        if (!success) {
+        try {
+            auth.loginAction();
+        } catch (err) {
             setLoading(false);
             setError(true);
         }
@@ -37,6 +38,15 @@ const LoginButton = () => {
                 Login with Canvas
             </Button>
         </>
+    );
+};
+
+const LogoutButton = () => {
+    const auth = useAuth();
+    return (
+        <Button color="secondary" onClick={auth.logoutAction}>
+            Logout
+        </Button>
     );
 };
 
@@ -80,6 +90,7 @@ const Page = () => {
                     sx={{ mt: 2 }}
                 >
                     <LoginButton />
+                    <LogoutButton />
                 </Box>
 
                 {/* Text about location access */}

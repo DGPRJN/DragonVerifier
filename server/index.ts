@@ -8,11 +8,6 @@ const port = process.env.EXPRESS_PORT;
 
 const frontEndUrl = process.env.NEXT_PUBLIC_FRONTEND_URL;
 
-// =============================
-const server = http.createServer(app);
-const wss = new WebSocketServer({ server });
-// ==============================
-
 const rootApi = "/api/v1";
 
 connectDB(); // establish connection to MongoDB
@@ -57,7 +52,10 @@ app.use(`${rootApi}/oauth`, oauthRouter);
 import qrCodes from "./api/qrCodes";
 app.use(`${rootApi}/qr`, qrCodes);
 
-// ========================
+// =============================
+const server = http.createServer(app);
+const wss = new WebSocketServer({ server });
+// ==============================
 
 setWebSocketServer(wss);
 app.use("/api/v1/geofence", geofenceRoutes);
@@ -72,7 +70,7 @@ wss.on("connection", (ws) => {
 
 // =========================
 
-server.listen(port, () => {
+app.listen(port, () => {
     // Change back after demo maybe to app.listen
     console.log(`Server started at http://localhost:${port}`);
 });
