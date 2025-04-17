@@ -42,6 +42,7 @@ model User {
 model Course {
     id           String             @id @default(auto()) @map("_id") @db.ObjectId // auto generated MongoDB object id
     canvasId     String             @unique
+    name         String
     instructorId String             @db.ObjectId // for storing instructor's id value from User object
     instructor   User               @relation("Instructor", fields: [instructorId], references: [id]) // relates Course's instructor id to instructor's user id
     canvasUserId     String             @unique
