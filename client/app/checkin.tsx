@@ -21,6 +21,7 @@ export const CheckinButton = () => {
                             headers: {
                                 "Content-Type": "application/json",
                             },
+                            credentials: "include",
                             body: JSON.stringify({
                                 latitude: lat,
                                 longitude: lon,
@@ -47,8 +48,12 @@ export const CheckinButton = () => {
 
     return (
         <Box display="flex" flexDirection="column" alignItems="center">
-            <Button variant="contained" color="primary" onClick={getLocation} 
-                sx={{ fontSize: '1.2rem', width: '400px' }}>
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={getLocation}
+                sx={{ fontSize: "1.2rem", width: "400px" }}
+            >
                 Check-in
             </Button>
             <Container maxWidth="lg" sx={{ mt: 4 }}>
@@ -59,19 +64,19 @@ export const CheckinButton = () => {
                     minHeight="80px"
                 >
                     {isInside !== null && (
-                    <Typography
-                        variant="body1"
-                        sx={{
-                        textAlign: "center",
-                        color: isInside ? "green" : "red",
-                        fontWeight: "bold",
-                        maxWidth: "100%",
-                        }}
-                    >
-                        {isInside
-                        ? "Thank you for using Dragon Verifier. You are now checked in and may close this page"
-                        : "Check-in failed. Please ensure you are inside the classroom before attempting to check in again"}
-                    </Typography>
+                        <Typography
+                            variant="body1"
+                            sx={{
+                                textAlign: "center",
+                                color: isInside ? "green" : "red",
+                                fontWeight: "bold",
+                                maxWidth: "100%",
+                            }}
+                        >
+                            {isInside
+                                ? "Thank you for using Dragon Verifier. You are now checked in and may close this page"
+                                : "Check-in failed. Please ensure you are inside the classroom before attempting to check in again"}
+                        </Typography>
                     )}
                 </Box>
             </Container>
