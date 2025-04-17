@@ -12,7 +12,7 @@
     "license": "ISC",
     "dependencies": {
         "@dotenvx/dotenvx": "^1.39.1",
-        "@prisma/client": "^6.4.1",
+        "@prisma/client": "^6.6.0",
         "@turf/boolean-point-in-polygon": "^7.2.0",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",
@@ -40,7 +40,7 @@
         "@types/ws": "^8.18.1",
         "concurrently": "^9.1.2",
         "nodemon": "^3.1.9",
-        "prisma": "^6.5.0",
+        "prisma": "^6.6.0",
         "ts-node": "^10.9.2",
         "typescript": "^5.8.3"
     }
