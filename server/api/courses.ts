@@ -6,12 +6,12 @@ const router = express.Router();
 // Route to get courses for a hardcoded blazerId
 router.get("/", async (req, res): Promise<void> => {
     try {
-        const blazerId = "student001"; // Hardcoded blazerId
+        const canvasUserId = "student001"; // Hardcoded canvas id
 
-        console.log(`Fetching courses for blazerId: ${blazerId}`);
+        console.log(`Fetching courses for Canvas Id: ${canvasUserId}`);
 
         const enrollments = await prisma.enrollment.findMany({
-            where: { blazerId },
+            where: { canvasUserId },
             include: { course: true },
         });
 
