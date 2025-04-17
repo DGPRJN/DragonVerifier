@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 interface Course {
   id: string;
   canvasId: string;
+  name: string;
   schedule: {
     days: string[];
     startTime: string;
@@ -54,7 +55,7 @@ const CourseDetails = () => {
   return (
     <div>
       <h1>Course Details</h1>
-      <p><strong>Canvas ID:</strong> {course.canvasId}</p>
+      <p><strong>Course:</strong> {course.name}</p>
       <p><strong>Instructor:</strong> {course.instructor?.name || "Unknown"}</p>
       <p><strong>Schedule:</strong> {formatSchedule(course.schedule)}</p>
     </div>

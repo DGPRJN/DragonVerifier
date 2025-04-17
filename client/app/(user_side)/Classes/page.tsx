@@ -7,6 +7,7 @@ import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, Tab
 interface Course {
   id: string;
   canvasId: string;
+  name: string;
   instructorId: string;
   schedule: any;
   createdAt: string;
@@ -144,7 +145,7 @@ const Page = () => {
                 textDecoration: "underline",
               }}
             >
-              {course.canvasId}
+              {course.name}
             </li>
           ))}
         </ul>
