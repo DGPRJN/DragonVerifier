@@ -14,6 +14,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const rootApi = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1`;
+const API_BASE_URL = `${process.env.NEXT_PUBLIC_FRONTEND_URL}`;
 
 export default function Page() {
     const queryParams = useSearchParams();
@@ -24,6 +25,10 @@ export default function Page() {
     const error = queryParams.get("message");
 
     // TODO: here we will look for "redirect to" query
+
+    setTimeout(() => {
+        window.location.href = `${API_BASE_URL}`;
+    }, 1000);
 
     if (success == "true") {
         useEffect(() => {
@@ -39,7 +44,7 @@ export default function Page() {
                 alignItems="center"
             >
                 <Alert severity="success">Successfully logged in!</Alert>
-                <Typography>Redirecting to REPLACE_ME...</Typography>
+                <Typography>Redirecting to Check-in...</Typography>
             </Box>
         );
     }
