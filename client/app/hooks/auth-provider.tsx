@@ -7,7 +7,7 @@ import React, { createContext, useContext, useState } from "react";
 
 // Inspiration taken from https://dev.to/miracool/how-to-manage-user-authentication-with-react-js-3ic5
 
-const rootApi = `${process.env.NEXT_PUBLIC_BACKEND_LOCAL}/api/v1`;
+const rootApi = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1`;
 const localStorage = typeof window !== "undefined" ? window.localStorage : null;
 
 export const AuthContext = createContext<{
