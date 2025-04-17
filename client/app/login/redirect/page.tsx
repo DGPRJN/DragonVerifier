@@ -11,7 +11,7 @@ import axios from "axios";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const rootApi = `${process.env.NEXT_PUBLIC_BACKEND_LOCAL}/api/v1`;
+const rootApi = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1`;
 
 export default function Page() {
     const queryParams = useSearchParams();
