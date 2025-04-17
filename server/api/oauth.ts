@@ -26,7 +26,7 @@ const scopes = [
 ];
 
 const frontend = process.env.NEXT_PUBLIC_FRONTEND_URL;
-const backend = process.env.NEXT_PUBLIC_BACKEND_LOCAL;
+const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 // Provides frontend with the correct login url
 router.get("/login", async (req: Request, res) => {
