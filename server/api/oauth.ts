@@ -26,16 +26,16 @@ const scopes = [
 ];
 
 const frontend = process.env.NEXT_PUBLIC_FRONTEND_URL;
-const backend = process.env.NEXT_PUBLIC_BACKEND_LOCAL;
+const backend = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 // Provides frontend with the correct login url
 router.get("/login", async (req: Request, res) => {
     const loginUri = generateLoginRedirect(req);
 
-    res.json({ redirect: loginUri });
+    res.json({ success: true, redirect: loginUri });
 });
 
-router.get("/logout", async (req, res) => {
+router.post("/logout", async (req, res) => {
     const cookie = req.cookies.token as string;
 
     if (!cookie || typeof cookie !== "string") {
@@ -87,7 +87,7 @@ router.get("/redirect", async (req: Request, res: Response) => {
 router.get("/whoami", async (req: Request, res: Response) => {
     const cookie = req.cookies.token as string;
 
-    let jose = await import("jose");
+    let jose = await import("jose"); //todo: automate this
 
     const secret = jose.base64url.decode(process.env.JWT_TOKEN_SECRET!);
     if (!cookie || typeof cookie !== "string") {
@@ -108,11 +108,15 @@ router.get("/whoami", async (req: Request, res: Response) => {
 
     fetch(`${canvasUrl}/api/v1/users/${payload.user.id}/profile`, {
         headers: { Authorization: `Bearer ${token}` },
-    }).then(async (fRes) => {
-        const data = await fRes.json();
+    })
+        .then(async (fRes) => {
+            const data = await fRes.json();
 
-        res.json([fRes.status, data]);
-    });
+            res.json({ success: true, user: data });
+        })
+        .catch((err) => {
+            res.status(500).json({ success: false, message: err });
+        });
 });
 
 function generateLoginRedirect(req: Request) {
