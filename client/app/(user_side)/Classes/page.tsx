@@ -44,7 +44,7 @@ const Page = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch("/api/courses");
+        const response = await fetch("/api/v1/courses");
         if (response.ok) {
           const data: Course[] = await response.json();
           setCourses(data);
