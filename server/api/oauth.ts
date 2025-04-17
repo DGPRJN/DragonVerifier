@@ -26,6 +26,7 @@ const scopes = [
 ];
 
 const frontend = process.env.NEXT_PUBLIC_FRONTEND_URL;
+const backend = process.env.NEXT_PUBLIC_BACKEND_LOCAL;
 
 // Provides frontend with the correct login url
 router.get("/login", async (req: Request, res) => {
@@ -130,14 +131,7 @@ function generateLoginRedirect(req: Request) {
 }
 
 function generateRedirectUri(req: Request) {
-    return (
-        req.protocol +
-        "://" +
-        req.hostname +
-        (port ? ":" : "") +
-        port +
-        "/api/v1/oauth/redirect"
-    );
+    return backend + "/api/v1/oauth/redirect";
 }
 
 async function generateAccessToken(user: CanvasUser, canvasApiToken: string) {
@@ -160,13 +154,13 @@ async function generateAccessToken(user: CanvasUser, canvasApiToken: string) {
 }
 
 // local user object
-interface CanvasUser {
+export interface CanvasUser {
     id: number;
     name: string;
     global_id: string;
 }
 
-interface JwtPayload {
+export interface JwtPayload {
     user: CanvasUser;
     canvas_api_token: string;
 }

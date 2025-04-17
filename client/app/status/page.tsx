@@ -5,11 +5,11 @@ import { Box, Typography, List, ListItem, ListItemText } from "@mui/material";
 
 export const CheckinFeed = () => {
     const [messages, setMessages] = useState<any[]>([]);
-    const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL!;
 
     useEffect(() => {
         const ws = new WebSocket(API_BASE_URL.replace("https", "wss"));
-        
+
         ws.onopen = () => {
             console.log("Connected to WebSocket server ✅");
         };
@@ -38,8 +38,14 @@ export const CheckinFeed = () => {
                     <ListItem key={idx}>
                         <ListItemText
                             primary={`Location: (${msg.latitude}, ${msg.longitude})`}
-                            secondary={`Status: ${msg.success ? "✅ Success" : "❌ Failed"} at ${new Date(msg.timestamp).toLocaleString()}`}
+                            secondary={`Status: ${
+                                msg.success ? "✅ Success" : "❌ Failed"
+                            } at ${new Date(msg.timestamp).toLocaleString()}`}
                         />
+                        <ListItemText>
+                            User: Id: {msg.canvasUser.id}, Name:{" "}
+                            {msg.canvasUser.name}
+                        </ListItemText>
                     </ListItem>
                 ))}
             </List>
