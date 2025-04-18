@@ -111,13 +111,23 @@ export const qrcvalidation = () => {
         if (isMounted) {
             const params = new URLSearchParams(window.location.search);
             const id = params.get("id");
-
+            
             if (id) {
+                window.sessionStorage.setItem("checkinId", id);
                 const checkValidity = async () => {
                     const isQRCodeValid = await checkQRCodeValidity(id);
                     setIsValid(isQRCodeValid);
                 };
                 checkValidity();
+            } else {
+                const savedId = window.sessionStorage.getItem("checkinId");
+                if (savedId) {
+                    const checkValidity = async () => {
+                        const isQRCodeValid = await checkQRCodeValidity(savedId);
+                        setIsValid(isQRCodeValid);
+                    };
+                    checkValidity();
+                }
             }
         }
     }, [isMounted]);
