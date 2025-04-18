@@ -4,7 +4,6 @@ import { Box, Button, Container, Typography } from "@mui/material";
 export const CheckinButton = () => {
     const [location, setLocation] = useState<string | null>(null);
     const [isInside, setIsInside] = useState<boolean | null>(null);
-    const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
     const getLocation = () => {
         if (navigator.geolocation) {
@@ -13,6 +12,8 @@ export const CheckinButton = () => {
                     const lat = position.coords.latitude.toFixed(17);
                     const lon = position.coords.longitude.toFixed(17);
                     setLocation(`Latitude: ${lat}, Longitude: ${lon}`);
+                    
+                    const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
                     const response = await fetch(
                         `${API_BASE_URL}/api/v1/geofence/check-location`,
@@ -108,29 +109,52 @@ export const qrcvalidation = () => {
 
     // Gets the id from the URL to check if it is valid
     useEffect(() => {
-        if (isMounted) {
+        if (!isMounted) return;
+
+        const redirectURL = process.env.NEXT_PUBLIC_FRONTEND_URL;
+    
+        const checkQRAndID = async () => {
             const params = new URLSearchParams(window.location.search);
             const id = params.get("id");
-            
+    
+            const response = await fetch(`${redirectURL}/api/v1/oauth/whoami`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+            });
+    
+            const data = await response.json();
+            console.log(data);
             if (id) {
                 window.sessionStorage.setItem("checkinId", id);
-                const checkValidity = async () => {
+                
+                if (data.success) {
                     const isQRCodeValid = await checkQRCodeValidity(id);
                     setIsValid(isQRCodeValid);
-                };
-                checkValidity();
+                } else {
+                    setTimeout(() => {
+                        window.location.href = `${redirectURL}/login`;
+                    }, 1000);
+                }
+
             } else {
                 const savedId = window.sessionStorage.getItem("checkinId");
+                
                 if (savedId) {
-                    const checkValidity = async () => {
+                    console.log("retreived");
+                    // if (data.success) {
                         const isQRCodeValid = await checkQRCodeValidity(savedId);
                         setIsValid(isQRCodeValid);
-                    };
-                    checkValidity();
+                    // }
                 }
             }
-        }
+        };
+        checkQRAndID();
     }, [isMounted]);
+    
+    
 
     return { isValid, isMounted };
 };
