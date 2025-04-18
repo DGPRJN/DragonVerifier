@@ -4,48 +4,48 @@ import { CheckinButton, qrcvalidation } from './checkin';
 import { Box, Typography, Container } from "@mui/material";
 
 const Page = () => {
-  const { isValid, isMounted } = qrcvalidation();
+    const { isValid, isMounted } = qrcvalidation();
 
-  if (!isMounted) return null;
-  
-  return (
-    <>
-      <Container maxWidth="lg" sx={{ mt: 4}}>
-        <Typography
-          variant="h3"
-          sx={{
-            fontWeight: "bold",
-            textAlign: "center",
-            marginBottom: 4, 
-            color: "black", 
-          }}>
-          Checking in
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{
-            textAlign: "center",
-            marginBottom: 4, 
-            color: "black",
-          }}>
-          SP2025 CS 499-1C/499L-Q21 CSA 4990qC/499L-Q2/499L-Q21 Senior BS/BSA Capstone
-        </Typography>
-        <Box display="flex" justifyContent="center" sx={{ marginBottom: 4 }}>
-          <Display isValid={isValid} />
-        </Box>
-        <Typography
-          variant="body2"
-          sx={{
-            textAlign: "center",
-            fontWeight: "bold",
-            color: "black",
-          }}
-        >
-          Ensure you are in the correct classroom for your current session. Location access will be required.
-        </Typography>
-      </Container>
-    </>
-  );
+    if (!isMounted) return null;
+
+    return (
+        <>
+        <Container maxWidth="lg" sx={{ mt: 4}}>
+            <Typography
+            variant="h3"
+            sx={{
+                fontWeight: "bold",
+                textAlign: "center",
+                marginBottom: 4, 
+                color: "black", 
+            }}>
+            Checking in
+            </Typography>
+            <Typography
+            variant="body1"
+            sx={{
+                textAlign: "center",
+                marginBottom: 4, 
+                color: "black",
+            }}>
+            SP2025 CS 499-1C/499L-Q21 CSA 4990qC/499L-Q2/499L-Q21 Senior BS/BSA Capstone
+            </Typography>
+            <Box display="flex" justifyContent="center" sx={{ marginBottom: 4 }}>
+            <Display isValid={isValid} />
+            </Box>
+            <Typography
+            variant="body2"
+            sx={{
+                textAlign: "center",
+                fontWeight: "bold",
+                color: "black",
+            }}
+            >
+            Ensure you are in the correct classroom for your current session. Location access will be required.
+            </Typography>
+        </Container>
+        </>
+    );
 };
 
 export const Display = ({ isValid }: { isValid: boolean }) => {

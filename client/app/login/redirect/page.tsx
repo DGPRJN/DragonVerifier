@@ -44,7 +44,7 @@ export default function Page() {
                 alignItems="center"
             >
                 <Alert severity="success">Successfully logged in!</Alert>
-                <Typography>Redirecting to Check-in...</Typography>
+                <Typography>Redirecting you to Check-in...</Typography>
             </Box>
         );
     }
