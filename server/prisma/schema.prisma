@@ -57,15 +57,17 @@ model Course {
 
 // model for course objects (student)
 model Enrollment {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId // auto generated MongoDB object id
-    studentId String   @db.ObjectId // for storing student's id value from User object
-    student   User     @relation(fields: [studentId], references: [id]) // relates studentId value to id from User object
-    canvasUserId  String   @unique
-    courseId  String   @db.ObjectId // for storing course's id value from Course object
-    course    Course   @relation(fields: [courseId], references: [id]) // relates courseId value to id from Course object
-    createdAt DateTime @default(now()) // stores date and time created so that data can be deleted after a time (i.e., when semester's over)  
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  canvasId     String
+  studentId    String   @db.ObjectId
+  student      User     @relation(fields: [studentId], references: [id])
+  canvasUserId String
+  courseId     String   @db.ObjectId
+  course       Course   @relation(fields: [courseId], references: [id])
+  createdAt    DateTime @default(now())
 
-    @@map("Enrollments")
+  @@map("Enrollments")
+  @@unique([canvasUserId, canvasId]) // This is the correct constraint
 }
 
 // model for attendance records (student)

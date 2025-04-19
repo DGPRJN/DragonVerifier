@@ -44,14 +44,17 @@ const CourseDetails = () => {
   }, [courseId]);
 
   // Helper function to format schedule
-  const formatSchedule = (schedule: { days: string[]; startTime: string; endTime: string }) => {
+  const formatSchedule = (schedule: { days: string[]; startTime: string; endTime: string } | undefined) => {
+    if (!schedule || !schedule.days || !schedule.days.length || !schedule.startTime || !schedule.endTime) {
+      return "TBA";  // Return "TBA" if schedule is missing or incomplete
+    }
     const days = schedule.days.join(", ");
     const time = `${schedule.startTime} - ${schedule.endTime}`;
     return `${days} | ${time}`;
   };
-
+  
   if (!course) return <p>Loading...</p>;
-
+  
   return (
     <div>
       <h1>Course Details</h1>

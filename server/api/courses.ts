@@ -6,7 +6,7 @@ const router = express.Router();
 // Route to get courses for a hardcoded blazerId
 router.get("/", async (req, res): Promise<void> => {
     try {
-        const canvasUserId = "student001"; // Hardcoded canvas id
+        const canvasUserId = "3"; // Hardcoded canvas id
 
         console.log(`Fetching courses for Canvas Id: ${canvasUserId}`);
 
