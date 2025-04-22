@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, Container, Typography } from "@mui/material";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 export const CheckinButton = () => {
     const [location, setLocation] = useState<string | null>(null);
     const [isInside, setIsInside] = useState<boolean | null>(null);
+
 
     const getLocation = () => {
         if (navigator.geolocation) {
@@ -13,8 +16,7 @@ export const CheckinButton = () => {
                     const lon = position.coords.longitude.toFixed(17);
                     setLocation(`Latitude: ${lat}, Longitude: ${lon}`);
                     
-                    const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-
+                    
                     const response = await fetch(
                         `${API_BASE_URL}/api/v1/geofence/check-location`,
                         {
@@ -117,7 +119,7 @@ export const qrcvalidation = () => {
             const params = new URLSearchParams(window.location.search);
             const id = params.get("id");
     
-            const response = await fetch(`${redirectURL}/api/v1/oauth/whoami`, {
+            const response = await fetch(`${API_BASE_URL}/api/v1/oauth/whoami`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -129,7 +131,6 @@ export const qrcvalidation = () => {
             console.log(data);
             if (id) {
                 window.sessionStorage.setItem("checkinId", id);
-                
                 if (data.success) {
                     const isQRCodeValid = await checkQRCodeValidity(id);
                     setIsValid(isQRCodeValid);
@@ -143,11 +144,10 @@ export const qrcvalidation = () => {
                 const savedId = window.sessionStorage.getItem("checkinId");
                 
                 if (savedId) {
-                    console.log("retreived");
-                    // if (data.success) {
+                    if (data.success) {
                         const isQRCodeValid = await checkQRCodeValidity(savedId);
                         setIsValid(isQRCodeValid);
-                    // }
+                    }
                 }
             }
         };

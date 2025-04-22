@@ -26,8 +26,6 @@ router.get("/:id", (req: Request<{ id: string }>, res: Response): void => {
     const { id } = req.params;
     const entry = qrCodes.get(id);
 
-    console.log(`(DONT FORGET TO REMOVE THIS) QR Code Id to paste: ${id}`);
-
     if (!entry) {
         res.status(404).json({ valid: false, reason: "Not found or expired" });
         return;
