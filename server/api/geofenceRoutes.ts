@@ -20,10 +20,6 @@ export const setWebSocketServer = (server: WebSocketServer) => {
     wss = server;
 };
 
-// Load GeoJSON geofences
-const geojsonPath = path.resolve(__dirname, "../api/ch/301.geojson");
-const geojsonData = JSON.parse(fs.readFileSync(geojsonPath, "utf-8"));
-console.log("✅ GeoJSON file loaded from:", geojsonPath);
 
 //Recent check-ins logic in memory (Local Storage)
 const recentCheckins: any[] = [];
@@ -35,13 +31,15 @@ const addRecentCheckin = (checkinData: any) => {
     }
 };
 
+
 router.get("/recent-checkins", (req: Request, res: Response) => {
     res.json(recentCheckins);
 });
 
+
 // Logic for deleting check-ins older than 30 minutes
 setInterval(() => {
-    const THIRTY_MINUTES = 2 * 60 * 1000;
+    const THIRTY_MINUTES = 2 * 60 * 1000; //2 minutes atm, change later
     const now = Date.now();
 
     const beforeLength = recentCheckins.length;
@@ -59,12 +57,40 @@ setInterval(() => {
     recentCheckins.length = 0;
     recentCheckins.push(...filtered);
 
-}, 1 * 60 * 1000); // Runs every 5 minutes
+}, 1 * 60 * 1000); // Runs every 5 minutes (1 minute atm, change later)
+
+
+let geojsonCache: Record<string, Feature<Polygon>[]> = {};
+
+// Function to load Geojson data
+const loadGeoJSON = (buildingCode: string, roomNumber: string): Feature<Polygon>[] | null => {
+    const cacheKey = `${buildingCode}-${roomNumber}`;
+    if (geojsonCache[cacheKey]) return geojsonCache[cacheKey];
+
+    const filename = `${roomNumber}.geojson`;
+    const geojsonPath = path.resolve(__dirname, `../api/${buildingCode}/${filename}`);
+
+    if (!fs.existsSync(geojsonPath)) {
+        console.warn(`GeoJSON not found: ${geojsonPath}`);
+        return null;
+    }
+
+    try {
+        const data = JSON.parse(fs.readFileSync(geojsonPath, "utf-8"));
+        geojsonCache[cacheKey] = data.features;
+        return data.features;
+    } catch (err) {
+        console.error("Failed to parse GeoJSON:", err);
+        return null;
+    }
+};
+
 
 
 router.post("/check-location", async (req: Request, res: Response) => {
     console.log("API hit ✅: /check-location");
 
+    // Canvas logic
     const cookie = req.cookies.token as string;
     let jose = await import("jose");
 
@@ -91,14 +117,25 @@ router.post("/check-location", async (req: Request, res: Response) => {
         res.status(400).json({ error: "Missing latitude or longitude" });
         return;
     }
+    
+    // Load building code and room number. Replace with db values later
+    const buildingCode = "hhb";
+    const roomNumber = "106";
+
+    const geojsonFeatures = loadGeoJSON(buildingCode, roomNumber);
+    if (!geojsonFeatures) {
+        res.status(500).json({ error: "GeoJSON not found." }); 
+        return;
+    }
 
     const userPoint = point([parseFloat(longitude), parseFloat(latitude)]);
     console.log("User Location: 📍", latitude, longitude);
 
-    const insideGeofence = geojsonData.features.some(
+    const insideGeofence = geojsonFeatures.some(
         (feature: Feature<Polygon>) =>
             booleanPointInPolygon(userPoint, feature.geometry)
     );
+
 
     let canvasUser;
 
