@@ -13,24 +13,59 @@ router.use(cookieParser());
 
 const canvasUrl = process.env.CANVAS_BASE_URL;
 
-// ============
+//WebSocket integration
 let wss: WebSocketServer | null = null;
 
 export const setWebSocketServer = (server: WebSocketServer) => {
     wss = server;
 };
-// =============
 
 // Load GeoJSON geofences
 const geojsonPath = path.resolve(__dirname, "../api/ch/301.geojson");
 const geojsonData = JSON.parse(fs.readFileSync(geojsonPath, "utf-8"));
 console.log("✅ GeoJSON file loaded from:", geojsonPath);
 
+//Recent check-ins logic in memory (Local Storage)
+const recentCheckins: any[] = [];
+
+const addRecentCheckin = (checkinData: any) => {
+    recentCheckins.unshift(checkinData);
+    if (recentCheckins.length > 50) {
+        recentCheckins.pop();
+    }
+};
+
+router.get("/recent-checkins", (req: Request, res: Response) => {
+    res.json(recentCheckins);
+});
+
+// Logic for deleting check-ins older than 30 minutes
+setInterval(() => {
+    const THIRTY_MINUTES = 2 * 60 * 1000;
+    const now = Date.now();
+
+    const beforeLength = recentCheckins.length;
+
+    // Filters out any check-ins older than 30 minutes
+    const filtered = recentCheckins.filter((checkin) => {
+        const time = new Date(checkin.timestamp).getTime();
+        return now - time <= THIRTY_MINUTES;
+    });
+
+    if (filtered.length !== beforeLength) {
+        console.log(`Cleaned up ${beforeLength - filtered.length} old check-ins`);
+    }
+
+    recentCheckins.length = 0;
+    recentCheckins.push(...filtered);
+
+}, 1 * 60 * 1000); // Runs every 5 minutes
+
+
 router.post("/check-location", async (req: Request, res: Response) => {
     console.log("API hit ✅: /check-location");
 
     const cookie = req.cookies.token as string;
-
     let jose = await import("jose");
 
     const secret = jose.base64url.decode(process.env.JWT_TOKEN_SECRET!);
@@ -71,24 +106,26 @@ router.post("/check-location", async (req: Request, res: Response) => {
         headers: { Authorization: `Bearer ${token}` },
     }).then(async (fRes) => {
         const data = await fRes.json();
-
         const user: CanvasUser = data;
-
         canvasUser = user;
     });
 
-    // ======================
+    const checkinPayload = {
+        latitude,
+        longitude,
+        timestamp: new Date().toISOString(),
+        success: insideGeofence,
+        canvasUser: canvasUser,
+    };
+
+    // Adds the checkin to the array
+    addRecentCheckin(checkinPayload);
+
     // Broadcast to WebSocket clients
     if (wss) {
         const payload = {
             type: "checkin_attempt",
-            data: {
-                latitude,
-                longitude,
-                timestamp: new Date().toISOString(),
-                success: insideGeofence,
-                canvasUser: canvasUser,
-            },
+            data: checkinPayload,
         };
 
         wss.clients.forEach((client) => {
@@ -97,7 +134,6 @@ router.post("/check-location", async (req: Request, res: Response) => {
             }
         });
     }
-    // ======================
 
     res.json({ insideGeofence });
 });

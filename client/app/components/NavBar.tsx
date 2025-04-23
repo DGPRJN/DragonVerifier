@@ -166,6 +166,8 @@ function NavBarContent() {
                         { text: "Home", href: "/" },
                         { text: "Calendar", href: "/Calendar" },
                         { text: "Classes", href: "/Classes" },
+                        { text: "Login Status", href: "/status" },
+                        { text: "Generator", href: "/qrcode" },
                     ].map(({ text, href }) => (
                         <ListItem key={`${href}-${text}`} disablePadding>
                             <Link href={href} passHref legacyBehavior>
