@@ -6,10 +6,13 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 export const CheckinButton = () => {
     const [location, setLocation] = useState<string | null>(null);
     const [isInside, setIsInside] = useState<boolean | null>(null);
-
+    const [isLoading, setIsLoading] = useState(false);
 
     const getLocation = () => {
-        if (navigator.geolocation) {
+        if (navigator.geolocation && !isLoading) {
+            //setIsLoading(true);
+            console.log("Do not forget to enable button disabler on checkin.tsx");
+
             navigator.geolocation.getCurrentPosition(
                 async (position) => {
                     const lat = position.coords.latitude.toFixed(17);
@@ -18,7 +21,7 @@ export const CheckinButton = () => {
                     
                     
                     const response = await fetch(
-                        `${API_BASE_URL}/api/v1/geofence/check-location`,
+                        `${API_BASE_URL}/api/v1/socket/check-location`,
                         {
                             method: "POST",
                             headers: {
@@ -34,9 +37,11 @@ export const CheckinButton = () => {
 
                     const data = await response.json();
                     setIsInside(data.insideGeofence);
+                    setIsLoading(false);
                 },
                 (error) => {
                     alert("Error getting location: " + error.message);
+                    setIsLoading(false);
                 },
                 {
                     enableHighAccuracy: true,
@@ -45,7 +50,7 @@ export const CheckinButton = () => {
                 }
             );
         } else {
-            alert("Geolocation is not supported by this browser.");
+            alert("Unable to access geolocation at this time");
         }
     };
 
@@ -128,7 +133,6 @@ export const qrcvalidation = () => {
             });
     
             const data = await response.json();
-            console.log(data);
             if (id) {
                 window.sessionStorage.setItem("checkinId", id);
                 if (data.success) {
