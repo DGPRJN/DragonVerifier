@@ -75,6 +75,7 @@ model AttendanceRecord {
     id           String          @id @default(auto()) @map("_id") @db.ObjectId // auto generated MongoDB object id
     studentId    String          @db.ObjectId // for storing student's id value from User object
     student      User            @relation(fields: [studentId], references: [id]) // relates studentId value to id from User object
+    canvasId     String          @unique // stores course canvas id
     courseId     String          @db.ObjectId // for storing course's id value from Course object
     course       Course          @relation(fields: [courseId], references: [id]) // relates courseId value to id from Course object
     withinRadius Boolean         @default(false)
@@ -87,6 +88,7 @@ model AttendanceRecord {
 
 model ClassroomLocation {
     id           String @id @default(auto()) @map("_id") @db.ObjectId // auto-generated MongoDB object id
+    canvasId     String @unique // stores course canvas id
     courseId     String @unique @db.ObjectId // for storing course's id value from Course object
     course       Course @relation("CourseLocation", fields: [courseId], references: [id]) // relates courseId value to id from User object
     roomNumber   String
