@@ -17,7 +17,7 @@ connectDB(); // establish connection to MongoDB
 app.use(
     cors({
         origin: frontEndUrl, // TODO: Probably shouldn't do this...
-        methods: ["GET", "POST", "OPTIONS"],
+        methods: ["GET", "POST", "PATCH", "DELETE","OPTIONS"],
         credentials: true,
     })
 );

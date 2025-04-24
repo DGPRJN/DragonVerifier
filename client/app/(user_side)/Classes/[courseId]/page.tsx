@@ -1,8 +1,13 @@
-"use client"; 
+"use client";
 
 import React, { useEffect, useState } from "react";
-import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import {
+  Typography, Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, Paper, Box, Button, Dialog, DialogTitle,
+  DialogContent
+} from "@mui/material";
 import { useParams } from "next/navigation";
+import Course_Settings from "@/app/components/Course_Settings";
 
 interface AttendanceRecord {
   canvasUserId: string;
@@ -26,22 +31,48 @@ interface Course {
     name: string;
   };
   attendance: AttendanceRecord[];
-  datesArray: string[]; 
+  datesArray: string[];
 }
 
 const CourseDetails = () => {
   const [course, setCourse] = useState<Course | null>(null);
+  const [open, setOpen] = useState(false);
+  const [isInstructor, setIsInstructor] = useState(false); // Track if user is an instructor
   const params = useParams();
   const courseId = params?.courseId as string;
 
   useEffect(() => {
-    if (!courseId) return;
     const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-    const fetchCourse = async () => {
+
+    // Check if the user is an instructor
+    const checkRole = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/v1/courses/${courseId}`, {
+        const roleResponse = await fetch(`${API_BASE_URL}/api/v1/oauth/whoami`, {
           credentials: "include",
         });
+
+        if (roleResponse.ok) {
+          const roleData = await roleResponse.json();
+          if (roleData.role === "Instructor") {
+            setIsInstructor(true);
+          } else {
+            setIsInstructor(false);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch user role", err);
+        window.location.href = `/`;
+      }
+    }; checkRole();
+
+    const fetchCourse = async () => {
+      try {
+        if (!courseId) return;
+
+        const response = await fetch(`/api/v1/courses/${courseId}`, {
+          credentials: "include",
+        });
+
         if (response.ok) {
           const data: Course = await response.json();
           setCourse(data);
@@ -53,10 +84,10 @@ const CourseDetails = () => {
       }
     };
 
+    
     fetchCourse();
   }, [courseId]);
 
-  // Helper function to format schedule
   const formatSchedule = (schedule: { days: string; startTime: string; endTime: string } | undefined) => {
     if (!schedule || !schedule.days || !schedule.startTime || !schedule.endTime) {
       return "TBA";
@@ -84,51 +115,58 @@ const CourseDetails = () => {
       <Typography variant="h5" sx={{ color: "black", pt: 1, pb: 1, pl: 1 }}>
         Class Time: {formatSchedule(course.schedule)}
       </Typography>
-      <TableContainer component={Paper} sx={{ pl: 1, pr: 1 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell
-                style={{
-                  backgroundColor: "#325E4B", 
-                  color: "white", 
-                  fontWeight: "bold",
-                }}
-              >
-                Date
-              </TableCell>
-              <TableCell
-                style={{
-                  backgroundColor: "#325E4B", 
-                  color: "white", 
-                  fontWeight: "bold",
-                }}
-              >
-                Attendance
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {course.datesArray.map((day, index) => {
-              const status = getAttendanceStatus(day);
-              let statusColor = "limegreen";
-              if (status === "Absent") statusColor = "#ef5350";
-              else if (status === "Late") statusColor = "yellow";
-              else if (status === "Pending") statusColor = "lightgrey";
-              const formattedDate = new Date(day).toLocaleDateString();
 
-              return (
-                <TableRow key={index} sx={{ pl: 1, pr: 1 }}>
-                  <TableCell>{formattedDate}</TableCell>
-                  <TableCell sx={{ backgroundColor: statusColor }}>
-                    {status}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {isInstructor && (
+        <Box sx={{ textAlign: "center", mt: 4 }}>
+          <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
+            Open Settings
+          </Button>
+        </Box>
+      )}
+
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle>Settings</DialogTitle>
+        <DialogContent>
+          <Course_Settings open={open} onClose={() => setOpen(false)} courseId={courseId} />
+        </DialogContent>
+      </Dialog>
+
+      {/* Display the attendance table only if the user is not an instructor */}
+      {!isInstructor && (
+        <TableContainer component={Paper} sx={{ pl: 1, pr: 1 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell style={{ backgroundColor: "#325E4B", color: "white", fontWeight: "bold" }}>
+                  Date
+                </TableCell>
+                <TableCell style={{ backgroundColor: "#325E4B", color: "white", fontWeight: "bold" }}>
+                  Attendance
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {course.datesArray.map((day, index) => {
+                const status = getAttendanceStatus(day);
+                let statusColor = "limegreen";
+                if (status === "Absent") statusColor = "#ef5350";
+                else if (status === "Late") statusColor = "yellow";
+                else if (status === "Pending") statusColor = "lightgrey";
+                const formattedDate = new Date(day).toLocaleDateString();
+
+                return (
+                  <TableRow key={index} sx={{ pl: 1, pr: 1 }}>
+                    <TableCell>{formattedDate}</TableCell>
+                    <TableCell sx={{ backgroundColor: statusColor }}>
+                      {status}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </>
   );
 };

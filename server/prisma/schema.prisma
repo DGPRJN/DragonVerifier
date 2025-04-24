@@ -51,7 +51,11 @@ model Course {
     attendance   AttendanceRecord[] // stores attendance records
     location     ClassroomLocation? @relation("CourseLocation") // stores classroom location of course    
     createdAt    DateTime           @default(now()) // stores date and time created so that data can be deleted after a time (i.e., when semester's over)
-    datesArray   DateTime[]   
+    datesArray   DateTime[]
+    geolocationEnabled Boolean      @default(false)
+    enableGrading Boolean           @default(false)
+    entrySlip     Boolean           @default(false)
+    exitSlip      Boolean           @default(false)
 
     @@map("Courses")
 }

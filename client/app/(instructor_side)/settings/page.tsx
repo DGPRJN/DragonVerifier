@@ -24,7 +24,7 @@ const Page = () => {
     </Box>
 
     {/* Settings Dialog */}
-    <Course_Settings open={open} onClose={handleClose} />
+    <Course_Settings open={open} onClose={handleClose} courseId={undefined} />
 </>
     );
 };
