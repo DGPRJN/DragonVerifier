@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from "@mui/material";
 
 interface Course {
   id: string;
@@ -19,6 +19,7 @@ const Page = () => {
   // Sample table data for class records (displayed when no courses are found)
   const classData = [
     {
+      id: "CS 499-1C",
       className: "SP2025 CS 499-1C/499L-Q21 CSA 4990qC/499L-Q2/499L-Q21 Senior BS/BSA Capstone",
       instructor: "Amber Wagner",
       meetingTime: "MWF 10:10-11:00",
@@ -26,6 +27,7 @@ const Page = () => {
       attendancePercentage: "84%", // Derived percentage
     },
     {
+      id: "MA 227-6D",
       className: "SP2025 MA 227-6D Calculus III",
       instructor: "Marius Nkashama",
       meetingTime: "MW 2:30-4:20",
@@ -33,6 +35,7 @@ const Page = () => {
       attendancePercentage: "90%", // Derived percentage
     },
     {
+      id: "MA360",
       className: "SP2025 MA 360/560 Scientific Programming",
       instructor: "Carmeliza Navasca",
       meetingTime: "TH 9:30-10:45",
@@ -40,6 +43,11 @@ const Page = () => {
       attendancePercentage: "83%", // Derived percentage
     },
   ];
+
+  /* Gets all IDs of the Classes in the dummyData. Used for the key of the table row when 
+    creating the buttons for the All Courses Page
+  */
+  const classIDs = classData.map((course) => course.id);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -63,6 +71,11 @@ const Page = () => {
   const handleCourseClick = (courseId: string) => {
     router.push(`/Classes/${courseId}`); // Navigate to dynamic course page
   };
+
+  // Placeholder Function for the Course TableRow
+  function doNothing() {
+    return;
+  }
 
   return (
     <div>
@@ -118,13 +131,19 @@ const Page = () => {
               {/* Table Body */}
               <TableBody>
                 {classData.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{item.className}</TableCell>
-                    <TableCell>{item.instructor}</TableCell>
-                    <TableCell>{item.meetingTime}</TableCell>
-                    <TableCell>
-                      {item.attendanceRecord} ({item.attendancePercentage})
-                    </TableCell>
+                  <TableRow key={classIDs[index]} onClick={doNothing} 
+                    sx={{
+                      cursor: "pointer",
+                      transition: "background 0.3s",
+                      "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
+                      "&:active": { backgroundColor: "rgba(33, 150, 243, 0.3)" },
+                    }}>
+                      <TableCell>{item.className}</TableCell>
+                      <TableCell>{item.instructor}</TableCell>
+                      <TableCell>{item.meetingTime}</TableCell>
+                      <TableCell>
+                        {item.attendanceRecord} ({item.attendancePercentage})
+                      </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
