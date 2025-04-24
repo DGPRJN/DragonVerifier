@@ -1,8 +1,8 @@
 import express, { Request, Response } from "express";
 
-// QR Code expire time (set to 1 minute at the moment)
+// QR Code expire time (set to 5 minutes at the moment)
 // Set this time to whatever you need for ease of use when testing
-const expire_time = 60000;
+const expire_time = 300000;
 
 const router = express.Router();
 
@@ -25,8 +25,6 @@ setInterval(() => {
 router.get("/:id", (req: Request<{ id: string }>, res: Response): void => {
     const { id } = req.params;
     const entry = qrCodes.get(id);
-
-    console.log(`(DONT FORGET TO REMOVE THIS) QR Code Id to paste: ${id}`);
 
     if (!entry) {
         res.status(404).json({ valid: false, reason: "Not found or expired" });

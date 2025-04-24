@@ -1,11 +1,14 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+const nextConfig = {
     async rewrites() {
+        const isProd = process.env.NODE_ENV === "production";
+        const backendUrl = isProd
+            ? process.env.NEXT_PUBLIC_BACKEND_URL
+            : process.env.NEXT_PUBLIC_BACKEND_LOCAL;
+
         return [
             {
                 source: "/api/:path*",
-                destination: `${process.env.NEXT_PUBLIC_BACKEND_LOCAL}/api/:path*`,
+                destination: `${backendUrl}/api/:path*`,
             },
         ];
     },

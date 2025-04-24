@@ -7,9 +7,11 @@ import { useParams } from "next/navigation";
 interface Course {
   id: string;
   canvasId: string;
+  name: string;
   schedule: {
-    days: string[];
-    time: string;
+    days: string;
+    startTime: string;
+    endTime: string;
   };
   instructor: {
     id: string;
@@ -22,32 +24,35 @@ const CourseDetails = () => {
   const params = useParams();
   const courseId = params?.courseId as string;
 
-  // useEffect(() => {
-  //   if (!courseId) return;
+  useEffect(() => {
+    if (!courseId) return;
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const fetchCourse = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/v1/courses/${courseId}`, {
+            credentials: "include", 
+        }); // Fetch specific course using courseId
+        if (response.ok) {
+          const data: Course = await response.json();
+          setCourse(data);
+        } else {
+          console.error("Course not found");
+        }
+      } catch (error) {
+        console.error("Error fetching course:", error);
+      }
+    };
 
-  //   const fetchCourse = async () => {
-  //     try {
-  //       const response = await fetch(`/api/courses/${courseId}`); // Fetch specific course using courseId
-  //       if (response.ok) {
-  //         const data: Course = await response.json();
-  //         setCourse(data);
-  //       } else {
-  //         console.error("Course not found");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching course:", error);
-  //     }
-  //   };
-
-  //   fetchCourse();
-  // }, [courseId]);
-
-
+    fetchCourse();
+  }, [courseId]);
 
   // Helper function to format schedule
-  const formatSchedule = (schedule: { days: string[]; time: string }) => {
-    const days = schedule.days.join(", ");
-    return `${days} | ${schedule.time}`;
+  const formatSchedule = (schedule: { days: string; startTime: string; endTime: string } | undefined) => {
+    if (!schedule || !schedule.days || !schedule.startTime || !schedule.endTime) {
+      return "TBA";
+    }
+    console.log("Schedule object:", schedule);
+    return `${schedule.days} | ${schedule.startTime} - ${schedule.endTime}`;
   };
 
   // if (!course) return <p>Loading...</p>;
@@ -141,6 +146,17 @@ const CourseDetails = () => {
     //   <p><strong>Instructor:</strong> {course.instructor?.name || "Unknown"}</p>
     //   <p><strong>Schedule:</strong> {formatSchedule(course.schedule)}</p>
     // </div>
+
+  
+  if (!course) return <p>Loading...</p>;
+  
+  return (
+    <div>
+      <h1>Course Details</h1>
+      <p><strong>Course:</strong> {course.name}</p>
+      <p><strong>Instructor:</strong> {course.instructor?.name || "Unknown"}</p>
+      <p><strong>Schedule:</strong> {formatSchedule(course.schedule)}</p>
+    </div>
   );
 };
 

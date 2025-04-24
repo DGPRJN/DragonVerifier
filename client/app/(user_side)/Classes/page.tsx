@@ -7,6 +7,7 @@ import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, Tab
 interface Course {
   id: string;
   canvasId: string;
+  name: string;
   instructorId: string;
   schedule: any;
   createdAt: string;
@@ -49,10 +50,14 @@ const Page = () => {
   */
   const classIDs = classData.map((course) => course.id);
 
+  const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+  
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch("/api/courses");
+        const response = await fetch(`${API_BASE_URL}/api/v1/courses`, {
+            credentials: "include", 
+          });
         if (response.ok) {
           const data: Course[] = await response.json();
           setCourses(data);
@@ -163,7 +168,7 @@ const Page = () => {
                 textDecoration: "underline",
               }}
             >
-              {course.canvasId}
+              {course.name}
             </li>
           ))}
         </ul>

@@ -6,7 +6,7 @@ export const generate = async (
 
   const randomString = Math.random().toString(36).substring(2, 15);
   const uniqueLoginUrl = `${loginUrl}/?id=${randomString}`;
-  const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_LOCAL;
+  const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   try {
     if (element) {
