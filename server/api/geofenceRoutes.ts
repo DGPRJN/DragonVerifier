@@ -146,6 +146,7 @@ router.post("/check-location", async (req: Request, res: Response) => {
         return;
     }
 
+    console.log(buildingCode);
     const userPoint = point([parseFloat(longitude), parseFloat(latitude)]);
     console.log("User Location: 📍", latitude, longitude);
 

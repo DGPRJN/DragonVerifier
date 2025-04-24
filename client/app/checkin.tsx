@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, Container, Typography } from "@mui/material";
+import router from "next/router";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -108,6 +109,7 @@ const checkQRCodeValidity = async (id: string) => {
 export const qrcvalidation = () => {
     const [isValid, setIsValid] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
+    const [role, setRole] = useState<string | null>(null);
 
     // Sets the mounted value for the URL to true to test for validity
     useEffect(() => {
@@ -133,24 +135,30 @@ export const qrcvalidation = () => {
             });
     
             const data = await response.json();
-            if (id) {
-                window.sessionStorage.setItem("checkinId", id);
-                if (data.success) {
-                    const isQRCodeValid = await checkQRCodeValidity(id);
-                    setIsValid(isQRCodeValid);
-                } else {
-                    setTimeout(() => {
-                        window.location.href = `${redirectURL}/login`;
-                    }, 1000);
-                }
 
-            } else {
-                const savedId = window.sessionStorage.getItem("checkinId");
-                
-                if (savedId) {
+            setRole(data.role);
+
+            if (data.role === "Instructor") {return;} else {
+
+                if (id) {
+                    window.sessionStorage.setItem("checkinId", id);
                     if (data.success) {
-                        const isQRCodeValid = await checkQRCodeValidity(savedId);
+                        const isQRCodeValid = await checkQRCodeValidity(id);
                         setIsValid(isQRCodeValid);
+                    } else {
+                        setTimeout(() => {
+                            window.location.href = `${redirectURL}/login`;
+                        }, 1000);
+                    }
+
+                } else {
+                    const savedId = window.sessionStorage.getItem("checkinId");
+                    
+                    if (savedId) {
+                        if (data.success) {
+                            const isQRCodeValid = await checkQRCodeValidity(savedId);
+                            setIsValid(isQRCodeValid);
+                        }
                     }
                 }
             }
@@ -160,5 +168,5 @@ export const qrcvalidation = () => {
     
     
 
-    return { isValid, isMounted };
+    return { isValid, isMounted, role };
 };
