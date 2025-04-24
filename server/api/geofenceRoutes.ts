@@ -114,6 +114,8 @@ router.post("/check-location", async (req: Request, res: Response) => {
 
     const { latitude, longitude } = req.body;
 
+    
+
     if (!latitude || !longitude) {
         res.status(400).json({ error: "Missing latitude or longitude" });
         return;
@@ -121,16 +123,24 @@ router.post("/check-location", async (req: Request, res: Response) => {
 
     const course = await prisma.enrollment.findFirst({
         where: { canvasUserId: payload.user.id.toString() },
-        select: { id: true, canvasId: true }
+        select: { id: true, canvasId: true, course: { select: { geolocationEnabled: true } } }
     });
+
+    if (!course?.course?.geolocationEnabled) {
+        res.json({ insideGeofence: true });
+        return;
+    }
     
     const classroom = await prisma.classroomLocation.findFirst({
         where: { canvasId: course?.canvasId },
         select: {
             buildingCode: true,
-            roomNumber: true
+            roomNumber: true,
+            course: { select: { geolocationEnabled: true } },
           },
     });
+
+    
       
     if (!course || !classroom) {
         res.status(404).json({ error: "Error getting course or classroom" });
@@ -147,6 +157,7 @@ router.post("/check-location", async (req: Request, res: Response) => {
     }
 
     console.log(buildingCode);
+    console.log(roomNumber);
     const userPoint = point([parseFloat(longitude), parseFloat(latitude)]);
     console.log("User Location: 📍", latitude, longitude);
 

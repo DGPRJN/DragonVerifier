@@ -1,8 +1,13 @@
-"use client"; 
+"use client";
 
 import React, { useEffect, useState } from "react";
-import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import {
+  Typography, Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, Paper, Box, Button, Dialog, DialogTitle,
+  DialogContent
+} from "@mui/material";
 import { useParams } from "next/navigation";
+import Course_Settings from "@/app/components/Course_Settings";
 
 interface AttendanceRecord {
   canvasUserId: string;
@@ -26,11 +31,12 @@ interface Course {
     name: string;
   };
   attendance: AttendanceRecord[];
-  datesArray: string[]; 
+  datesArray: string[];
 }
 
 const CourseDetails = () => {
   const [course, setCourse] = useState<Course | null>(null);
+  const [open, setOpen] = useState(false);
   const params = useParams();
   const courseId = params?.courseId as string;
 
@@ -39,7 +45,7 @@ const CourseDetails = () => {
     const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
     const fetchCourse = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/v1/courses/${courseId}`, {
+        const response = await fetch(`/api/v1/courses/${courseId}`, {
           credentials: "include",
         });
         if (response.ok) {
@@ -56,7 +62,6 @@ const CourseDetails = () => {
     fetchCourse();
   }, [courseId]);
 
-  // Helper function to format schedule
   const formatSchedule = (schedule: { days: string; startTime: string; endTime: string } | undefined) => {
     if (!schedule || !schedule.days || !schedule.startTime || !schedule.endTime) {
       return "TBA";
@@ -84,28 +89,26 @@ const CourseDetails = () => {
       <Typography variant="h5" sx={{ color: "black", pt: 1, pb: 1, pl: 1 }}>
         Class Time: {formatSchedule(course.schedule)}
       </Typography>
+
+      <Box sx={{ textAlign: "center", mt: 4 }}>
+        <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
+          Open Settings
+        </Button>
+      </Box>
+
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle>Settings</DialogTitle>
+        <DialogContent>
+          <Course_Settings open={open} onClose={() => setOpen(false)} courseId={courseId} />
+        </DialogContent>
+      </Dialog>
+
       <TableContainer component={Paper} sx={{ pl: 1, pr: 1 }}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell
-                style={{
-                  backgroundColor: "#325E4B", 
-                  color: "white", 
-                  fontWeight: "bold",
-                }}
-              >
-                Date
-              </TableCell>
-              <TableCell
-                style={{
-                  backgroundColor: "#325E4B", 
-                  color: "white", 
-                  fontWeight: "bold",
-                }}
-              >
-                Attendance
-              </TableCell>
+              <TableCell style={{ backgroundColor: "#325E4B", color: "white", fontWeight: "bold" }}>Date</TableCell>
+              <TableCell style={{ backgroundColor: "#325E4B", color: "white", fontWeight: "bold" }}>Attendance</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

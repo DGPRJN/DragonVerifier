@@ -100,4 +100,53 @@ router.get("/:courseId", async (req, res): Promise<void> => {
     }
 });
 
+router.patch("/:courseId/settings", async (req, res) => {
+    const { courseId } = req.params;
+    const { geolocationEnabled, enableGrading, buildingCode, roomNumber } = req.body;
+
+    try {
+        const course = await prisma.course.findUnique({
+            where: { id: courseId },
+            select: { canvasId: true },
+        });
+
+        if (!course) {
+            res.status(404).json({ error: "Course not found" });
+            return;
+        }
+        
+        const updatedCourse = await prisma.course.update({
+            where: { id: courseId },
+            data: {
+                geolocationEnabled,
+                enableGrading,
+                location: geolocationEnabled
+                    ? {
+                          upsert: {
+                              create: {
+                                  canvasId: course.canvasId,
+                                  buildingCode,
+                                  roomNumber,
+                              },
+                              update: {
+                                  buildingCode,
+                                  roomNumber,
+                              },
+                          },
+                      }
+                    : undefined, // if geolocation isn't enabled, don't touch location
+            },
+            include: {
+                location: true,
+            },
+        });
+
+        res.json(updatedCourse);
+    } catch (error) {
+        console.error("Failed to update course settings:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+
 export default router;
