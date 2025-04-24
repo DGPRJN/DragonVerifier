@@ -34,8 +34,14 @@ interface Course {
   datesArray: string[];
 }
 
+interface User {
+  id: string;
+  role: "Student" | "Instructor";
+}
+
 const CourseDetails = () => {
   const [course, setCourse] = useState<Course | null>(null);
+  const [user, setUser] = useState<User | null>(null); // Add user state
   const [open, setOpen] = useState(false);
   const params = useParams();
   const courseId = params?.courseId as string;
@@ -59,7 +65,24 @@ const CourseDetails = () => {
       }
     };
 
+    const fetchUser = async () => {
+      try {
+        const response = await fetch("/api/v1/user", {
+          credentials: "include", // Adjust endpoint if needed
+        });
+        if (response.ok) {
+          const data: User = await response.json();
+          setUser(data);
+        } else {
+          console.error("User not found");
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+
     fetchCourse();
+    fetchUser();
   }, [courseId]);
 
   const formatSchedule = (schedule: { days: string; startTime: string; endTime: string } | undefined) => {
@@ -76,7 +99,7 @@ const CourseDetails = () => {
     return attendanceRecord ? attendanceRecord.status : "Pending";
   };
 
-  if (!course) return <p>Loading...</p>;
+  if (!course || !user) return <p>Loading...</p>;
 
   return (
     <>
@@ -90,48 +113,54 @@ const CourseDetails = () => {
         Class Time: {formatSchedule(course.schedule)}
       </Typography>
 
-      <Box sx={{ textAlign: "center", mt: 4 }}>
-        <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
-          Open Settings
-        </Button>
-      </Box>
+      {user.role === "Instructor" && (
+        <Box sx={{ textAlign: "center", mt: 4 }}>
+          <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
+            Open Settings
+          </Button>
+        </Box>
+      )}
 
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Settings</DialogTitle>
-        <DialogContent>
-          <Course_Settings open={open} onClose={() => setOpen(false)} courseId={courseId} />
-        </DialogContent>
-      </Dialog>
+      {user.role === "Instructor" && (
+        <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
+          <DialogTitle>Settings</DialogTitle>
+          <DialogContent>
+            <Course_Settings open={open} onClose={() => setOpen(false)} courseId={courseId} />
+          </DialogContent>
+        </Dialog>
+      )}
 
-      <TableContainer component={Paper} sx={{ pl: 1, pr: 1 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell style={{ backgroundColor: "#325E4B", color: "white", fontWeight: "bold" }}>Date</TableCell>
-              <TableCell style={{ backgroundColor: "#325E4B", color: "white", fontWeight: "bold" }}>Attendance</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {course.datesArray.map((day, index) => {
-              const status = getAttendanceStatus(day);
-              let statusColor = "limegreen";
-              if (status === "Absent") statusColor = "#ef5350";
-              else if (status === "Late") statusColor = "yellow";
-              else if (status === "Pending") statusColor = "lightgrey";
-              const formattedDate = new Date(day).toLocaleDateString();
+      {user.role === "Student" && (
+        <TableContainer component={Paper} sx={{ pl: 1, pr: 1 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell style={{ backgroundColor: "#325E4B", color: "white", fontWeight: "bold" }}>Date</TableCell>
+                <TableCell style={{ backgroundColor: "#325E4B", color: "white", fontWeight: "bold" }}>Attendance</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {course.datesArray.map((day, index) => {
+                const status = getAttendanceStatus(day);
+                let statusColor = "limegreen";
+                if (status === "Absent") statusColor = "#ef5350";
+                else if (status === "Late") statusColor = "yellow";
+                else if (status === "Pending") statusColor = "lightgrey";
+                const formattedDate = new Date(day).toLocaleDateString();
 
-              return (
-                <TableRow key={index} sx={{ pl: 1, pr: 1 }}>
-                  <TableCell>{formattedDate}</TableCell>
-                  <TableCell sx={{ backgroundColor: statusColor }}>
-                    {status}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                return (
+                  <TableRow key={index} sx={{ pl: 1, pr: 1 }}>
+                    <TableCell>{formattedDate}</TableCell>
+                    <TableCell sx={{ backgroundColor: statusColor }}>
+                      {status}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </>
   );
 };

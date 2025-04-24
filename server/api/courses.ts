@@ -32,41 +32,60 @@ router.get("/", async (req, res): Promise<void> => {
 
         console.log(`Fetching courses for Canvas Id: ${canvasUserId}`);
 
-        const enrollments = await prisma.enrollment.findMany({
+        const user = await prisma.user.findUnique({
             where: { canvasUserId },
-            include: {
-              course: {
-                include: {
-                  instructor: true,
-                },
-              },
-            },
-          });
+        });
 
-        if (!enrollments.length) {
-            res.status(404).json({ error: "No courses found for this user" });
+        if (!user) {
+            res.status(404).json({ error: "User not found" });
             return;
         }
 
-        res.json(enrollments.map((enrollment) => enrollment.course));
+        // Check if the user is an instructor or a student
+        if (user.role === 'Instructor') {
+            const coursesTaught = await prisma.course.findMany({
+                where: {
+                    instructorId: user.id,
+                },
+                include: {
+                    instructor: true,
+                },
+            });
+
+            if (!coursesTaught.length) {
+                res.status(404).json({ error: "No courses found for this instructor" });
+                return;
+            }
+
+            res.json(coursesTaught);
+        } else if (user.role === 'Student') {
+            const enrollments = await prisma.enrollment.findMany({
+                where: { studentId: user.id },
+                include: {
+                    course: {
+                        include: {
+                            instructor: true,
+                        },
+                    },
+                },
+            });
+
+            if (!enrollments.length) {
+                res.status(404).json({ error: "No courses found for this user" });
+                return;
+            }
+
+            res.json(enrollments.map((enrollment) => enrollment.course));
+        } else {
+            res.status(400).json({ error: "Invalid user role" });
+        }
     } catch (error) {
         console.error("Database error:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 });
 
-// Route to get all courses
-router.get("/all", async (req, res): Promise<void> => {
-    try {
-        console.log("Fetching all courses");
 
-        const courses = await prisma.course.findMany(); // Fetch all courses
-        res.json(courses);
-    } catch (error) {
-        console.error("Database error:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
-});
 
 // Route to get a single course by ID
 router.get("/:courseId", async (req, res): Promise<void> => {

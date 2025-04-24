@@ -13,6 +13,25 @@ function Course_Settings({ open, onClose, courseId }) {
     const [getBuildingCode, setBuildingCode] = useState('');
     const [getRoomNumber, setRoomNumber] = useState('');
 
+    // Define room numbers for University Hall (uh)
+    const uhRooms = [
+        '1005', '1007', '1008', '1009', '1011',
+        '2005', '2007', '2009', '2010', '2011', '2012', '2013',
+        '2100', '3002', '3005', '3007', '3009', '3010', '3011',
+        '3012', '3013', '3101', '4002', '4004', '4101',
+        '5066', '5101', '5105'
+    ];
+
+    // Define room numbers for Cambell Hall (ch)
+    const chRooms = ['301'];
+
+    // Define room numbers for Heritage Hall (hhb)
+    const hhbRooms = [
+        '102', '104', '106', '121', '124', '125', '126', '202', '221', '224',
+        '225', '226', '227', '334', '342', '402', '420', '422', '426', '432',
+        '524', '526', '536', '549'
+    ];
+
     const handleGradingSwitch = (event) => setEnableGrading(event.target.checked);
     const handleGeolocationToggle = (event) => setGeolocationEnabled(event.target.checked);
 
@@ -52,7 +71,7 @@ function Course_Settings({ open, onClose, courseId }) {
             <DialogContent>
                 <Container sx={{ mt: 2 }}>
                     <TextField
-                        sx={{ padding: 1, pb: 2, pt:2 }}
+                        sx={{ padding: 1, pb: 2, pt: 2 }}
                         label="Starting Time"
                         type="time"
                         variant="outlined"
@@ -60,7 +79,7 @@ function Course_Settings({ open, onClose, courseId }) {
                         InputLabelProps={{ shrink: true }}
                     />
                     <TextField
-                        sx={{ padding: 1, pb: 2, pt:2 }}
+                        sx={{ padding: 1, pb: 2, pt: 2 }}
                         label="Tardy Cutoff"
                         type="time"
                         variant="outlined"
@@ -68,7 +87,7 @@ function Course_Settings({ open, onClose, courseId }) {
                         fullWidth
                     />
                     <TextField
-                        sx={{ padding: 1, pb: 2, pt:2 }}
+                        sx={{ padding: 1, pb: 2, pt: 2 }}
                         label="Absent Cutoff"
                         type="time"
                         variant="outlined"
@@ -131,24 +150,41 @@ function Course_Settings({ open, onClose, courseId }) {
                                     onChange={(e) => setBuildingCode(e.target.value)}
                                     label="Building"
                                 >
-                                    <MenuItem value="Cambell Hall">Cambell Hall</MenuItem>
-                                    <MenuItem value="University Hall">University Hall</MenuItem>
-                                    <MenuItem value="Heritage Hall">Heritage Hall</MenuItem>
+                                    <MenuItem value="ch">Cambell Hall</MenuItem>
+                                    <MenuItem value="uh">University Hall</MenuItem>
+                                    <MenuItem value="hhb">Heritage Hall</MenuItem>
                                 </Select>
                             </FormControl>
 
-                            <FormControl fullWidth sx={{ padding: 1 }}>
-                                <InputLabel>Room</InputLabel>
-                                <Select
-                                    value={getRoomNumber}
-                                    onChange={(e) => setRoomNumber(e.target.value)}
-                                    label="Room"
-                                >
-                                    <MenuItem value="3000">2000</MenuItem>
-                                    <MenuItem value="3500">3500</MenuItem>
-                                    <MenuItem value="1008">1008</MenuItem>
-                                </Select>
-                            </FormControl>
+                            {(getBuildingCode === 'uh' || getBuildingCode === 'ch' || getBuildingCode === 'hhb') && (
+                                <FormControl fullWidth sx={{ padding: 1 }}>
+                                    <InputLabel>Room</InputLabel>
+                                    <Select
+                                        value={getRoomNumber}
+                                        onChange={(e) => setRoomNumber(e.target.value)}
+                                        label="Room"
+                                    >
+                                        {getBuildingCode === 'uh' &&
+                                            uhRooms.map((room) => (
+                                                <MenuItem key={room} value={room}>
+                                                    {room}
+                                                </MenuItem>
+                                            ))}
+                                        {getBuildingCode === 'ch' &&
+                                            chRooms.map((room) => (
+                                                <MenuItem key={room} value={room}>
+                                                    {room}
+                                                </MenuItem>
+                                            ))}
+                                        {getBuildingCode === 'hhb' &&
+                                            hhbRooms.map((room) => (
+                                                <MenuItem key={room} value={room}>
+                                                    {room}
+                                                </MenuItem>
+                                            ))}
+                                    </Select>
+                                </FormControl>
+                            )}
                         </Box>
                     )}
 
