@@ -1,12 +1,34 @@
 import express from "express";
 import { prisma } from "../db";
+import { JwtPayload } from "./oauth";
+import cookieParser from "cookie-parser";
 
 const router = express.Router();
+router.use(cookieParser()); 
 
-// Route to get courses for a hardcoded blazerId
+// Route to get courses for a canvas id
 router.get("/", async (req, res): Promise<void> => {
+    const cookie = req.cookies.token as string;
+    let jose = await import("jose");
+
+    const secret = jose.base64url.decode(process.env.JWT_TOKEN_SECRET!);
+    if (!cookie || typeof cookie !== "string") {
+        res.status(400).json({ error: "Invalid or missing token" });
+        return;
+    }
+
+    let jwt;
     try {
-        const canvasUserId = "3"; // Hardcoded canvas id
+        jwt = await jose.jwtDecrypt(cookie, secret);
+    } catch (error) {
+        res.status(400).json({ error: "Failed to decrypt token" });
+        return;
+    }
+
+    const payload = jwt.payload.payload as JwtPayload;
+    try {
+        const canvasUserId = payload.user.id.toString(); 
+        console.log(canvasUserId);
 
         console.log(`Fetching courses for Canvas Id: ${canvasUserId}`);
 

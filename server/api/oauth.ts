@@ -129,15 +129,20 @@ router.get("/redirect", async (req: Request, res: Response) => {
 
         for (const course of courses) {
             if (role === "Instructor") {
+                const existingCourse = await prisma.course.findUnique({
+                    where: { canvasId: course.id.toString() },
+                });
+            
                 await prisma.course.upsert({
                     where: { canvasId: course.id.toString() },
                     update: {
                         name: course.name,
+                        schedule: existingCourse?.schedule ?? {}, 
                     },
                     create: {
                         canvasId: course.id.toString(),
                         name: course.name,
-                        schedule: {},
+                        schedule: {}, 
                         canvasUserId: userProfile.id.toString(),
                         instructor: {
                             connect: { id: dbUser.id },

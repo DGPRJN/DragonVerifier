@@ -8,7 +8,7 @@ interface Course {
   canvasId: string;
   name: string;
   schedule: {
-    days: string[];
+    days: string;
     startTime: string;
     endTime: string;
   };
@@ -44,13 +44,12 @@ const CourseDetails = () => {
   }, [courseId]);
 
   // Helper function to format schedule
-  const formatSchedule = (schedule: { days: string[]; startTime: string; endTime: string } | undefined) => {
-    if (!schedule || !schedule.days || !schedule.days.length || !schedule.startTime || !schedule.endTime) {
-      return "TBA";  // Return "TBA" if schedule is missing or incomplete
+  const formatSchedule = (schedule: { days: string; startTime: string; endTime: string } | undefined) => {
+    if (!schedule || !schedule.days || !schedule.startTime || !schedule.endTime) {
+      return "TBA";
     }
-    const days = schedule.days.join(", ");
-    const time = `${schedule.startTime} - ${schedule.endTime}`;
-    return `${days} | ${time}`;
+    console.log("Schedule object:", schedule);
+    return `${schedule.days} | ${schedule.startTime} - ${schedule.endTime}`;
   };
   
   if (!course) return <p>Loading...</p>;
