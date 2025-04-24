@@ -73,14 +73,126 @@ router.get("/redirect", async (req: Request, res: Response) => {
         }
 
         const data = await fRes.json();
-
         const token = data.access_token;
-        const user: CanvasUser = data.user;
 
-        const jwt = await generateAccessToken(user, token);
+        const userProfileRes = await fetch(`${canvasUrl}/api/v1/users/self/profile`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!userProfileRes.ok) {
+            res.redirect(`${frontend}/login/redirect?success=false`);
+            return;
+        }
+
+        const userProfile = await userProfileRes.json();
+        let role: "Student" | "Instructor" = "Student";
+
+        const coursesRes = await fetch(`${canvasUrl}/api/v1/courses`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!coursesRes.ok) {
+            res.redirect(`${frontend}/login/redirect?success=false`);
+            return;
+        }
+
+        const courses = await coursesRes.json();
+
+        const selfEnrollmentsRes = await fetch(`${canvasUrl}/api/v1/users/self/enrollments`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!selfEnrollmentsRes.ok) {
+            res.redirect(`${frontend}/login/redirect?success=false`);
+            return;
+        }
+
+        const selfEnrollments = await selfEnrollmentsRes.json();
+
+        const isInstructor = selfEnrollments.some((enr: any) => enr.type === "TeacherEnrollment");
+        if (isInstructor) {
+            role = "Instructor";
+        }
+
+        const dbUser = await prisma.user.upsert({
+            where: { canvasUserId: userProfile.id.toString() },
+            update: {
+                name: userProfile.name,
+                role,
+            },
+            create: {
+                canvasUserId: userProfile.id.toString(),
+                name: userProfile.name,
+                role,
+            },
+        });
+
+        for (const course of courses) {
+            if (role === "Instructor") {
+                await prisma.course.upsert({
+                    where: { canvasId: course.id.toString() },
+                    update: {
+                        name: course.name,
+                    },
+                    create: {
+                        canvasId: course.id.toString(),
+                        name: course.name,
+                        schedule: {},
+                        canvasUserId: userProfile.id.toString(),
+                        instructor: {
+                            connect: { id: dbUser.id },
+                        },
+                    },
+                });
+            }
+
+            const dbCourse = await prisma.course.findUnique({
+                where: { canvasId: course.id.toString() },
+            });
+
+            if (!dbCourse) {
+                console.log("Course not found in DB, skipping:", course.id); 
+                continue;  
+            }
+
+            console.log("dbCourse found:", dbCourse); 
+
+            for (const enrollment of selfEnrollments) {
+                if (enrollment.type === "StudentEnrollment" && enrollment.course_id === course.id) {
+                    console.log("Creating/updating enrollment:", enrollment); 
+
+                    await prisma.enrollment.upsert({
+                        where: {
+                            canvasUserId_canvasId: {
+                                canvasUserId: userProfile.id.toString(),
+                                canvasId: course.id.toString(),
+                            },
+                        },
+                        update: {},  
+                        create: {
+                            studentId: dbUser.id,
+                            canvasId: course.id.toString(),
+                            canvasUserId: userProfile.id.toString(),
+                            courseId: dbCourse.id,
+                        },
+                    });
+                }
+            }
+        }
+
+        const jwt = await generateAccessToken(
+            {
+                id: userProfile.id,
+                name: userProfile.name,
+                global_id: userProfile.global_id ?? "",
+            },
+            token
+        );
 
         res.cookie("token", jwt);
         res.redirect(`${frontend}/login/redirect?success=true`);
+    }).catch(() => {
+        res.redirect(`${frontend}/login/redirect?success=false`);
     });
 });
 
