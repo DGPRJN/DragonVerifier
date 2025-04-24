@@ -29,10 +29,6 @@ const CourseDetails = () => {
     const fetchCourse = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/api/v1/courses/${courseId}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
             credentials: "include", 
         }); // Fetch specific course using courseId
         if (response.ok) {

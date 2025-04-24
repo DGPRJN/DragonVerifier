@@ -48,10 +48,6 @@ const Page = () => {
     const fetchCourses = async () => {
       try {
         const response = await fetch(`${API_BASE_URL}/api/v1/courses`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
             credentials: "include", 
           });
         if (response.ok) {

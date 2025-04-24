@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import { Button, Container, Box, Typography, RadioGroup, FormControlLabel, Radio } from "@mui/material";
 import generate from "./generate";
+import router from "next/router";
 
 const GenerateQRCode = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -14,7 +15,37 @@ const GenerateQRCode = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const loginUrl = process.env.NEXT_PUBLIC_FRONTEND_URL;
+  const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+  
+  useEffect(() => {
+    const checkRole = async () => {
+      
+      try {
+        const roleResponse = await fetch(`${API_BASE_URL}/api/v1/oauth/whoami`, {
+          credentials: "include",
+        });
 
+        if (!roleResponse.ok) {
+          throw new Error("Failed to fetch user role");
+        }
+
+        const roleData = await roleResponse.json();
+        if (roleData.role !== "Instructor") {
+            setTimeout(() => {
+                window.location.href = `/`;
+            });
+        }
+      } catch (err) {
+        console.error("Failed to fetch user role", err);
+        setTimeout(() => {
+            window.location.href = `/`;
+        });
+      }
+    };
+
+    checkRole();
+  }, [router]);
+  
   const handleClick = async () => {
     setExpired(false);
     setTimeLeft(300);
