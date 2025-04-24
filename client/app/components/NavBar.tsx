@@ -1,7 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
@@ -142,9 +142,38 @@ const Header = ({
 // Drawer + Header wrapper
 function NavBarContent() {
     const [open, setOpen] = useState(false);
+    const [isInstructor, setIsInstructor] = useState(false);
+    const [checkedRole, setCheckedRole] = useState(false); // prevent flicker
+
     const toggleDrawer = (newOpen: boolean) => () => {
-        setOpen((prevOpen) => !prevOpen); // Toggle the drawer state
+        setOpen((prevOpen) => !prevOpen);
     };
+
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+    useEffect(() => {
+        const fetchRole = async () => {
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/v1/oauth/whoami`, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                });
+                const data = await res.json();
+                if (data?.role === "Instructor") {
+                    setIsInstructor(true);
+                }
+            } catch (err) {
+                console.error("Error fetching role:", err);
+            } finally {
+                setCheckedRole(true);
+            }
+        };
+
+        fetchRole();
+    }, []);
 
     return (
         <>
@@ -152,10 +181,10 @@ function NavBarContent() {
             <Drawer
                 anchor="left"
                 open={open}
-                onClose={() => toggleDrawer(false)} // ensure this closes the drawer
+                onClose={() => toggleDrawer(false)}
                 PaperProps={{
                     sx: {
-                        mt: HEADER_HEIGHT, // drawer appears below header
+                        mt: HEADER_HEIGHT,
                         height: `calc(100% - ${HEADER_HEIGHT})`,
                     },
                 }}
@@ -166,8 +195,12 @@ function NavBarContent() {
                         { text: "Home", href: "/" },
                         { text: "Calendar", href: "/Calendar" },
                         { text: "Classes", href: "/Classes" },
-                        { text: "Login Status", href: "/status" },
-                        { text: "Generator", href: "/qrcode" },
+                        ...(isInstructor
+                            ? [
+                                  { text: "Login Status", href: "/status" },
+                                  { text: "Generator", href: "/qrcode" },
+                              ]
+                            : []),
                     ].map(({ text, href }) => (
                         <ListItem key={`${href}-${text}`} disablePadding>
                             <Link href={href} passHref legacyBehavior>
@@ -203,6 +236,8 @@ function NavBarContent() {
         </>
     );
 }
+
+
 
 // Export with dynamic import if needed
 export default dynamic(() => Promise.resolve(NavBarContent), { ssr: false });
