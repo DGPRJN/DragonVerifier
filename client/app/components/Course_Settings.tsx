@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
     InputAdornment, Box, Container, Switch, FormControlLabel,
     FormGroup, Checkbox, FormControl, FormLabel, TextField,
-    Dialog, DialogTitle, DialogContent, Select, MenuItem, InputLabel
+    Dialog, DialogTitle, DialogContent, Select, MenuItem, InputLabel, DialogActions, Button
 } from "@mui/material";
 
 function Course_Settings({ open, onClose }) {
@@ -125,6 +125,16 @@ function Course_Settings({ open, onClose }) {
                     )}
                 </Container>
             </DialogContent>
+
+<DialogActions>
+    <Button onClick={onClose}>Cancel</Button>
+    <Button variant="contained" onClick={() => {
+        // Handle save logic here if needed
+        onClose(); // Close after saving
+    }}>
+        Save
+    </Button>
+</DialogActions>
         </Dialog>
     );
 }
