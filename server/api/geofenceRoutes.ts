@@ -7,6 +7,7 @@ import { Feature, Polygon } from "geojson";
 import { WebSocketServer } from "ws";
 import { CanvasUser, JwtPayload } from "./oauth";
 import cookieParser from "cookie-parser";
+import { prisma } from "../db";
 
 const router = express.Router();
 router.use(cookieParser());
@@ -117,10 +118,27 @@ router.post("/check-location", async (req: Request, res: Response) => {
         res.status(400).json({ error: "Missing latitude or longitude" });
         return;
     }
+
+    const course = await prisma.enrollment.findFirst({
+        where: { canvasUserId: payload.user.id.toString() },
+        select: { id: true, canvasId: true }
+    });
     
-    // Load building code and room number. Replace with db values later
-    const buildingCode = "hhb";
-    const roomNumber = "106";
+    const classroom = await prisma.classroomLocation.findFirst({
+        where: { canvasId: course?.canvasId },
+        select: {
+            buildingCode: true,
+            roomNumber: true
+          },
+    });
+      
+    if (!course || !classroom) {
+        res.status(404).json({ error: "Error getting course or classroom" });
+        return;
+    } 
+
+    const buildingCode = classroom.buildingCode.toLocaleLowerCase();
+    const roomNumber = classroom.roomNumber;
 
     const geojsonFeatures = loadGeoJSON(buildingCode, roomNumber);
     if (!geojsonFeatures) {
