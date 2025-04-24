@@ -34,8 +34,14 @@ router.get("/", async (req, res): Promise<void> => {
 
         const enrollments = await prisma.enrollment.findMany({
             where: { canvasUserId },
-            include: { course: true },
-        });
+            include: {
+              course: {
+                include: {
+                  instructor: true,
+                },
+              },
+            },
+          });
 
         if (!enrollments.length) {
             res.status(404).json({ error: "No courses found for this user" });
@@ -71,8 +77,14 @@ router.get("/:courseId", async (req, res): Promise<void> => {
 
         const course = await prisma.course.findUnique({
             where: { id: courseId },
-            include: {
+            select: { 
+                id: true,
+                canvasId: true,
+                name: true,
                 instructor: true,
+                attendance: true, 
+                datesArray: true, 
+                schedule:true,
             },
         });
 
