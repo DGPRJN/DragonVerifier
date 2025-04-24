@@ -34,26 +34,45 @@ interface Course {
   datesArray: string[];
 }
 
-interface User {
-  id: string;
-  role: "Student" | "Instructor";
-}
-
 const CourseDetails = () => {
   const [course, setCourse] = useState<Course | null>(null);
-  const [user, setUser] = useState<User | null>(null); // Add user state
   const [open, setOpen] = useState(false);
+  const [isInstructor, setIsInstructor] = useState(false); // Track if user is an instructor
   const params = useParams();
   const courseId = params?.courseId as string;
 
   useEffect(() => {
-    if (!courseId) return;
     const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+    // Check if the user is an instructor
+    const checkRole = async () => {
+      try {
+        const roleResponse = await fetch(`${API_BASE_URL}/api/v1/oauth/whoami`, {
+          credentials: "include",
+        });
+
+        if (roleResponse.ok) {
+          const roleData = await roleResponse.json();
+          if (roleData.role === "Instructor") {
+            setIsInstructor(true);
+          } else {
+            setIsInstructor(false);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch user role", err);
+        window.location.href = `/`;
+      }
+    }; checkRole();
+
     const fetchCourse = async () => {
       try {
+        if (!courseId) return;
+
         const response = await fetch(`/api/v1/courses/${courseId}`, {
           credentials: "include",
         });
+
         if (response.ok) {
           const data: Course = await response.json();
           setCourse(data);
@@ -65,24 +84,8 @@ const CourseDetails = () => {
       }
     };
 
-    const fetchUser = async () => {
-      try {
-        const response = await fetch("/api/v1/user", {
-          credentials: "include", // Adjust endpoint if needed
-        });
-        if (response.ok) {
-          const data: User = await response.json();
-          setUser(data);
-        } else {
-          console.error("User not found");
-        }
-      } catch (error) {
-        console.error("Error fetching user:", error);
-      }
-    };
-
+    
     fetchCourse();
-    fetchUser();
   }, [courseId]);
 
   const formatSchedule = (schedule: { days: string; startTime: string; endTime: string } | undefined) => {
@@ -99,7 +102,7 @@ const CourseDetails = () => {
     return attendanceRecord ? attendanceRecord.status : "Pending";
   };
 
-  if (!course || !user) return <p>Loading...</p>;
+  if (!course) return <p>Loading...</p>;
 
   return (
     <>
@@ -113,7 +116,7 @@ const CourseDetails = () => {
         Class Time: {formatSchedule(course.schedule)}
       </Typography>
 
-      {user.role === "Instructor" && (
+      {isInstructor && (
         <Box sx={{ textAlign: "center", mt: 4 }}>
           <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
             Open Settings
@@ -121,22 +124,25 @@ const CourseDetails = () => {
         </Box>
       )}
 
-      {user.role === "Instructor" && (
-        <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
-          <DialogTitle>Settings</DialogTitle>
-          <DialogContent>
-            <Course_Settings open={open} onClose={() => setOpen(false)} courseId={courseId} />
-          </DialogContent>
-        </Dialog>
-      )}
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
+        <DialogTitle>Settings</DialogTitle>
+        <DialogContent>
+          <Course_Settings open={open} onClose={() => setOpen(false)} courseId={courseId} />
+        </DialogContent>
+      </Dialog>
 
-      {user.role === "Student" && (
+      {/* Display the attendance table only if the user is not an instructor */}
+      {!isInstructor && (
         <TableContainer component={Paper} sx={{ pl: 1, pr: 1 }}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell style={{ backgroundColor: "#325E4B", color: "white", fontWeight: "bold" }}>Date</TableCell>
-                <TableCell style={{ backgroundColor: "#325E4B", color: "white", fontWeight: "bold" }}>Attendance</TableCell>
+                <TableCell style={{ backgroundColor: "#325E4B", color: "white", fontWeight: "bold" }}>
+                  Date
+                </TableCell>
+                <TableCell style={{ backgroundColor: "#325E4B", color: "white", fontWeight: "bold" }}>
+                  Attendance
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
