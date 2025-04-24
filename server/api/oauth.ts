@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Role } from "@prisma/client";
 import cookieParser from "cookie-parser";
 import { JWEInvalid } from "jose/errors";
 import next from "next";
@@ -218,17 +218,35 @@ router.get("/whoami", async (req: Request, res: Response) => {
     const payload = jwt.payload.payload as JwtPayload;
     const token = payload.canvas_api_token;
 
-    fetch(`${canvasUrl}/api/v1/users/${payload.user.id}/profile`, {
-        headers: { Authorization: `Bearer ${token}` },
-    })
-        .then(async (fRes) => {
-            const data = await fRes.json();
-
-            res.json({ success: true, user: data });
-        })
-        .catch((err) => {
-            res.status(500).json({ success: false, message: err });
+    try {
+        const canvasCall = await fetch(`${canvasUrl}/api/v1/users/${payload.user.id}/profile`, {
+            headers: { Authorization: `Bearer ${token}` },
         });
+
+        if (!canvasCall.ok) {
+            res.status(500).json({ success: false, message: "Failed to fetch Canvas user" });
+            return;
+        }
+
+        const data = await canvasCall.json();
+
+        const dbUserInfo = await prisma.user.findUnique({
+            where: { canvasUserId: payload.user.id.toString() },
+            select: { role: true },
+        });
+
+        if (!dbUserInfo) {
+            res.status(404).json({ success: false, message: "User not found in database" });
+            return;
+        }
+        res.json({
+            success: true,
+            user: data,
+            role: dbUserInfo.role,
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Unexpected error", error: err });
+    }
 });
 
 function generateLoginRedirect(req: Request) {
