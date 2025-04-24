@@ -25,10 +25,16 @@ const CourseDetails = () => {
 
   useEffect(() => {
     if (!courseId) return;
-
+    const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
     const fetchCourse = async () => {
       try {
-        const response = await fetch(`/api/v1/courses/${courseId}`); // Fetch specific course using courseId
+        const response = await fetch(`${API_BASE_URL}/api/v1/courses/${courseId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include", 
+        }); // Fetch specific course using courseId
         if (response.ok) {
           const data: Course = await response.json();
           setCourse(data);
