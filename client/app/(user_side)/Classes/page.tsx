@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from "@mui/material";
+import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, IconButton } from "@mui/material";
 
 interface Course {
   id: string;
@@ -194,6 +194,17 @@ const Page = () => {
       <TableCell>{course.name}</TableCell>
       <TableCell>{course.instructor.name || "Unknown"}</TableCell>
       <TableCell>{course.schedule?.days || "N/A"}</TableCell>
+      <TableCell>
+        <IconButton
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent row click
+            console.log(`Settings for course ${course.id}`);
+          }}
+          aria-label={`settings-${course.id}`}
+        >
+          settings
+        </IconButton>
+        </TableCell>
     </TableRow>
   ))}
 </TableBody>
