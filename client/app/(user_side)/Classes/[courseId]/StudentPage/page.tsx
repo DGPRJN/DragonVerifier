@@ -3,11 +3,9 @@
 import React, { useEffect, useState } from "react";
 import {
   Typography, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper, Box, Button, Dialog, DialogTitle,
-  DialogContent
+  TableHead, TableRow, Paper,
 } from "@mui/material";
 import { useParams } from "next/navigation";
-import Course_Settings from "@/app/components/Course_Settings";
 
 interface AttendanceRecord {
   canvasUserId: string;
@@ -36,35 +34,10 @@ interface Course {
 
 const CourseDetails = () => {
   const [course, setCourse] = useState<Course | null>(null);
-  const [open, setOpen] = useState(false);
-  const [isInstructor, setIsInstructor] = useState(false); // Track if user is an instructor
   const params = useParams();
   const courseId = params?.courseId as string;
 
   useEffect(() => {
-    const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-    // Check if the user is an instructor
-    const checkRole = async () => {
-      try {
-        const roleResponse = await fetch(`${API_BASE_URL}/api/v1/oauth/whoami`, {
-          credentials: "include",
-        });
-
-        if (roleResponse.ok) {
-          const roleData = await roleResponse.json();
-          if (roleData.role === "Instructor") {
-            setIsInstructor(true);
-          } else {
-            setIsInstructor(false);
-          }
-        }
-      } catch (err) {
-        console.error("Failed to fetch user role", err);
-        window.location.href = `/`;
-      }
-    }; checkRole();
-
     const fetchCourse = async () => {
       try {
         if (!courseId) return;
@@ -116,23 +89,7 @@ const CourseDetails = () => {
         Class Time: {formatSchedule(course.schedule)}
       </Typography>
 
-      {isInstructor && (
-        <Box sx={{ textAlign: "center", mt: 4 }}>
-          <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
-            Open Settings
-          </Button>
-        </Box>
-      )}
 
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle>Settings</DialogTitle>
-        <DialogContent>
-          <Course_Settings open={open} onClose={() => setOpen(false)} courseId={courseId} />
-        </DialogContent>
-      </Dialog>
-
-      {/* Display the attendance table only if the user is not an instructor */}
-      {!isInstructor && (
         <TableContainer component={Paper} sx={{ pl: 1, pr: 1 }}>
           <Table>
             <TableHead>
@@ -166,7 +123,6 @@ const CourseDetails = () => {
             </TableBody>
           </Table>
         </TableContainer>
-      )}
     </>
   );
 };

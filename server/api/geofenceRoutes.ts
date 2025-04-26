@@ -71,6 +71,7 @@ const loadGeoJSON = (buildingCode: string, roomNumber: string): Feature<Polygon>
     const filename = `${roomNumber}.geojson`;
     const geojsonPath = path.resolve(__dirname, `../api/${buildingCode}/${filename}`);
 
+    
     if (!fs.existsSync(geojsonPath)) {
         console.warn(`GeoJSON not found: ${geojsonPath}`);
         return null;
@@ -78,6 +79,7 @@ const loadGeoJSON = (buildingCode: string, roomNumber: string): Feature<Polygon>
 
     try {
         const data = JSON.parse(fs.readFileSync(geojsonPath, "utf-8"));
+        console.log(`GeoJSON loaded for ${buildingCode} ${roomNumber} (${filename})`);
         geojsonCache[cacheKey] = data.features;
         return data.features;
     } catch (err) {
