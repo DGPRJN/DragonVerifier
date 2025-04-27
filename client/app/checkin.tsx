@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Box, Button, Container, Typography } from "@mui/material";
-import router from "next/router";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -11,7 +10,7 @@ export const CheckinButton = () => {
 
     const getLocation = () => {
         if (navigator.geolocation && !isLoading) {
-            //setIsLoading(true);
+            setIsLoading(true);
             console.log("Do not forget to enable button disabler on checkin.tsx");
 
             navigator.geolocation.getCurrentPosition(

@@ -38,7 +38,7 @@ export default function Page() {
     
                 if (data.success) {
                     if (data.role === "Instructor") {
-                        router.push("/qrcode");
+                        router.push("/Classes");
                     } else {
                         router.push("/");
                     }
