@@ -12,6 +12,9 @@ function Course_Settings({ open, onClose, courseId }) {
     const [geolocationEnabled, setGeolocationEnabled] = useState(false);
     const [getBuildingCode, setBuildingCode] = useState('');
     const [getRoomNumber, setRoomNumber] = useState('');
+    const [qrLinkTimer, setQrLinkTimer] = useState(2);
+    const [qrLinkTimerEnabled, setQrLinkTimerEnabled] = useState(false);
+
 
     // Define room numbers for University Hall (uh)
     const uhRooms = [
@@ -41,8 +44,8 @@ function Course_Settings({ open, onClose, courseId }) {
             enableGrading,
             buildingCode: geolocationEnabled ? getBuildingCode : null,
             roomNumber: geolocationEnabled ? getRoomNumber : null,
+            qrLinkTimer: qrLinkTimerEnabled ? qrLinkTimer : null,
         };
-
         try {
             const res = await fetch(`${API_BASE_URL}/api/v1/courses/${courseId}/settings`, {
                 method: "PATCH",
@@ -128,6 +131,43 @@ function Course_Settings({ open, onClose, courseId }) {
 
                     <FormGroup>
                         <FormLabel>Choose additional verification options</FormLabel>
+                        <FormControlLabel
+                            control={
+                            <Checkbox
+                                checked={qrLinkTimerEnabled}
+                                onChange={(e) => setQrLinkTimerEnabled(e.target.checked)}
+                            />
+                            }
+                            label="QR Code/Link Timer (default 2 minutes)"
+                        />
+                        {qrLinkTimerEnabled && (
+                            <TextField
+                                sx={{ padding: 1, maxWidth: 200 }}
+                                label="Timer Duration (minutes)"
+                                type="number"
+                                value={qrLinkTimer}
+                                onChange={(e) => {
+                                    const newValue = parseInt(e.target.value);
+                                    if (newValue >= 1 && newValue <= 60) {
+                                        setQrLinkTimer(newValue);
+                                    } else if (newValue < 1) {
+                                        setQrLinkTimer(1);  // Set to min value (1)
+                                    } else if (newValue > 60) {
+                                        setQrLinkTimer(60); // Set to max value (60)
+                                    }
+                                }}
+                                InputProps={{
+                                    endAdornment: <InputAdornment position="end">Max: 60</InputAdornment>,
+                                }}
+                                inputProps={{
+                                    min: 1,   // Minimum value
+                                    max: 60,  // Maximum value
+                                }}
+                                variant="outlined"
+                                size="small"
+                            />
+                        )}
+                        
                         <FormControlLabel control={<Checkbox />} label="Entry Slip" />
                         <FormControlLabel control={<Checkbox />} label="Exit Slip" />
                         <FormControlLabel

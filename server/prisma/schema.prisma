@@ -56,6 +56,7 @@ model Course {
     enableGrading Boolean           @default(false)
     entrySlip     Boolean           @default(false)
     exitSlip      Boolean           @default(false)
+    timer         Int               @default(2)
 
     @@map("Courses")
 }

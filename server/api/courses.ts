@@ -121,7 +121,7 @@ router.get("/:courseId", async (req, res): Promise<void> => {
 
 router.patch("/:courseId/settings", async (req, res) => {
     const { courseId } = req.params;
-    const { geolocationEnabled, enableGrading, buildingCode, roomNumber } = req.body;
+    const { geolocationEnabled, enableGrading, buildingCode, roomNumber, qrLinkTimer } = req.body;
 
     try {
         const course = await prisma.course.findUnique({
@@ -139,6 +139,7 @@ router.patch("/:courseId/settings", async (req, res) => {
             data: {
                 geolocationEnabled,
                 enableGrading,
+                timer: qrLinkTimer ?? undefined,
                 location: geolocationEnabled
                     ? {
                           upsert: {

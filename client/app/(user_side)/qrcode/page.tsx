@@ -1,9 +1,14 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { Button, Container, Box, Typography, RadioGroup, FormControlLabel, Radio } from "@mui/material";
+import { Button, Container, Box, Typography, RadioGroup, FormControlLabel, Radio, Select, MenuItem, InputLabel, FormControl } from "@mui/material";
 import generate from "./generate";
 import router from "next/router";
+
+interface Course {
+  id: string;
+  name: string;
+}
 
 const GenerateQRCode = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -11,15 +16,32 @@ const GenerateQRCode = () => {
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [qrGenerated, setQrGenerated] = useState(false);
   const [selectedType, setSelectedType] = useState<"qr" | "link">("qr");
-  const [generatedLink, setGeneratedLink] = useState<string | null>(null);
+  const [generatedLink, setGeneratedLink] = useState<string | null>(""); 
+  const [courses, setCourses] = useState<any[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState<string | null>(""); 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const loginUrl = process.env.NEXT_PUBLIC_FRONTEND_URL;
   const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-  
+
+  const fetchCourses = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/courses`, {
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data: Course[] = await response.json();
+        setCourses(data);
+      } else {
+        console.error("No courses found for this user");
+      }
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    }
+  };
+
   useEffect(() => {
     const checkRole = async () => {
-      
       try {
         const roleResponse = await fetch(`${API_BASE_URL}/api/v1/oauth/whoami`, {
           credentials: "include",
@@ -31,52 +53,64 @@ const GenerateQRCode = () => {
 
         const roleData = await roleResponse.json();
         if (roleData.role !== "Instructor") {
-            setTimeout(() => {
-                window.location.href = `/`;
-            });
+          setTimeout(() => {
+            window.location.href = `/`;
+          });
+        } else {
+          fetchCourses();
         }
       } catch (err) {
         console.error("Failed to fetch user role", err);
         setTimeout(() => {
-            window.location.href = `/`;
+          window.location.href = `/`;
         });
       }
     };
 
     checkRole();
   }, [router]);
-  
+
   const handleClick = async () => {
+    if (!selectedCourse) {
+      alert("Please select a course.");
+      return;
+    }
+
     setExpired(false);
-    setTimeLeft(300);
     setQrGenerated(true);
     setGeneratedLink(null);
 
     if (timerRef.current) clearInterval(timerRef.current);
 
-    const link = await generate(
+    const { expireTime, qrCodeUrl } = await generate(
       selectedType === "qr" ? canvasRef.current : null,
-      `${loginUrl}`
+      `${loginUrl}`,
+      selectedCourse
     );
 
-    if (selectedType === "link" && link) {
-      setGeneratedLink(link);
+    if (selectedType === "link" && qrCodeUrl) {
+      setGeneratedLink(qrCodeUrl);
     }
 
-    timerRef.current = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev === null) return null;
-        if (prev <= 1) {
-          clearInterval(timerRef.current!);
-          setExpired(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    if (expireTime !== null) {
+      setTimeLeft(expireTime * 60);
+
+      timerRef.current = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev === null) return null;
+          if (prev <= 1) {
+            clearInterval(timerRef.current!);
+            setExpired(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else {
+      setExpired(true);
+    }
   };
 
-  // Clears timer when state is changed
   useEffect(() => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -88,7 +122,6 @@ const GenerateQRCode = () => {
     setQrGenerated(false);
     setGeneratedLink(null);
   }, [selectedType]);
-  
 
   return (
     <Container
@@ -101,25 +134,30 @@ const GenerateQRCode = () => {
         gap: 2,
       }}
     >
+      <FormControl sx={{ minWidth: 200 }}>
+        <InputLabel>Course</InputLabel>
+        <Select
+          value={selectedCourse}
+          onChange={(e) => setSelectedCourse(e.target.value)}
+          label="Course"
+        >
+          {courses.map((course) => (
+            <MenuItem key={course.id} value={course.id}>
+              {course.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
       <RadioGroup
         row
         value={selectedType}
         onChange={(e) => setSelectedType(e.target.value as "qr" | "link")}
       >
-        <FormControlLabel
-          value="qr"
-          control={<Radio />}
-          label="QR Code"
-          sx={{ color: "black" }}
-        />
-        <FormControlLabel
-          value="link"
-          control={<Radio />}
-          label="Link"
-          sx={{ color: "black" }}
-        />
+        <FormControlLabel value="qr" control={<Radio />} label="QR Code" />
+        <FormControlLabel value="link" control={<Radio />} label="Link" />
       </RadioGroup>
-      
+
       <Button variant="contained" color="primary" onClick={handleClick}>
         Generate {selectedType === "qr" ? "QR Code" : "Link"}
       </Button>
@@ -131,19 +169,19 @@ const GenerateQRCode = () => {
       )}
 
       {selectedType === "link" && generatedLink && (
-        <Typography mt={2} variant="body2" color="white" sx={{ fontSize: "1.2rem"}}>
+        <Typography mt={2} variant="body2" color="white" sx={{ fontSize: "1.2rem" }}>
           Generated Link: <a href={generatedLink} style={{ color: "green" }} target="_blank">{generatedLink}</a>
         </Typography>
       )}
 
       {timeLeft !== null && !expired && (
-        <Typography variant="body2" color="black" mt={1} sx={{ fontSize: "1.2rem"}}>
+        <Typography variant="body2" color="black" mt={1} sx={{ fontSize: "1.2rem" }}>
           {selectedType === "qr" ? "QR Code" : "Link"} expires in: {timeLeft} second{timeLeft !== 1 ? "s" : ""}
         </Typography>
       )}
 
       {expired && (
-        <Typography variant="body2" color="error" mt={1} sx={{ fontSize: "1.2rem"}}>
+        <Typography variant="body2" color="error" mt={1} sx={{ fontSize: "1.2rem" }}>
           {selectedType === "qr" ? "QR Code" : "Link"} has expired. Please generate a new one.
         </Typography>
       )}
@@ -151,8 +189,4 @@ const GenerateQRCode = () => {
   );
 };
 
-const Page = () => {
-  return <GenerateQRCode />;
-};
-
-export default Page;
+export default GenerateQRCode;

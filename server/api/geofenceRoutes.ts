@@ -116,8 +116,6 @@ router.post("/check-location", async (req: Request, res: Response) => {
 
     const { latitude, longitude } = req.body;
 
-    
-
     if (!latitude || !longitude) {
         res.status(400).json({ error: "Missing latitude or longitude" });
         return;

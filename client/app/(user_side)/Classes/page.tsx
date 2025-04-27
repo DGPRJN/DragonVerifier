@@ -161,18 +161,19 @@ const Page = () => {
                     <TableCell>{course.schedule?.days || "N/A"}</TableCell>
 
                     {isInstructor && (
-                        <> <TableCell>
-                            <IconButton
-                                onClick={(e) => {
-                                e.stopPropagation();
-                                console.log(`Settings for course ${course.id}`);
-                                setSelectedCourseId(course.id);
-                                setOpen(true);
-                                }}
-                                aria-label={`settings-${course.id}`}
-                            >
-                                Settings
-                            </IconButton>
+                        <> 
+                            <TableCell>
+                                <IconButton
+                                    onClick={(e) => {
+                                    e.stopPropagation();
+                                    console.log(`Settings for course ${course.id}`);
+                                    setSelectedCourseId(course.id);
+                                    setOpen(true);
+                                    }}
+                                    aria-label={`settings-${course.id}`}
+                                >
+                                    Settings
+                                </IconButton>
                             </TableCell>
 
                             {selectedCourseId === course.id && (
