@@ -94,14 +94,12 @@ export const CheckinButton = () => {
 
 // Function to check QR Code Validity
 const checkQRCodeValidity = async (id: string) => {
-    const response = await fetch(`/api/v1/qr/${id}`);
-
-    if (!response.ok) {
-        return false;
-    }
-
+    const response = await fetch(`/api/v1/qr/${id}`, {
+        credentials: "include",
+    });
     const data = await response.json();
     return data.valid;
+        
 };
 
 // Function for QR Code Validation

@@ -13,8 +13,6 @@ function Course_Settings({ open, onClose, courseId }) {
     const [getBuildingCode, setBuildingCode] = useState('');
     const [getRoomNumber, setRoomNumber] = useState('');
     const [qrLinkTimer, setQrLinkTimer] = useState(2);
-    const [qrLinkTimerEnabled, setQrLinkTimerEnabled] = useState(false);
-
 
     // Define room numbers for University Hall (uh)
     const uhRooms = [
@@ -44,7 +42,7 @@ function Course_Settings({ open, onClose, courseId }) {
             enableGrading,
             buildingCode: geolocationEnabled ? getBuildingCode : null,
             roomNumber: geolocationEnabled ? getRoomNumber : null,
-            qrLinkTimer: qrLinkTimerEnabled ? qrLinkTimer : null,
+            qrLinkTimer: qrLinkTimer ?? undefined,
         };
         try {
             const res = await fetch(`${API_BASE_URL}/api/v1/courses/${courseId}/settings`, {
@@ -70,175 +68,167 @@ function Course_Settings({ open, onClose, courseId }) {
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-            <DialogTitle>Settings</DialogTitle>
-            <DialogContent>
-                <Container sx={{ mt: 2 }}>
-                    <TextField
-                        sx={{ padding: 1, pb: 2, pt: 2 }}
-                        label="Starting Time"
-                        type="time"
-                        variant="outlined"
-                        fullWidth
-                        InputLabelProps={{ shrink: true }}
-                    />
-                    <TextField
-                        sx={{ padding: 1, pb: 2, pt: 2 }}
-                        label="Tardy Cutoff"
-                        type="time"
-                        variant="outlined"
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                    />
-                    <TextField
-                        sx={{ padding: 1, pb: 2, pt: 2 }}
-                        label="Absent Cutoff"
-                        type="time"
-                        variant="outlined"
-                        fullWidth
-                        InputLabelProps={{ shrink: true }}
-                    />
+        <DialogTitle>Settings</DialogTitle>
+        <DialogContent>
+            <Container sx={{ mt: 2 }}>
+                <TextField
+                    sx={{ padding: 1, pb: 2, pt: 2 }}
+                    label="Starting Time"
+                    type="time"
+                    variant="outlined"
+                    fullWidth
+                    InputLabelProps={{ shrink: true }}
+                />
+                <TextField
+                    sx={{ padding: 1, pb: 2, pt: 2 }}
+                    label="Tardy Cutoff"
+                    type="time"
+                    variant="outlined"
+                    InputLabelProps={{ shrink: true }}
+                    fullWidth
+                />
+                <TextField
+                    sx={{ padding: 1, pb: 2, pt: 2 }}
+                    label="Absent Cutoff"
+                    type="time"
+                    variant="outlined"
+                    fullWidth
+                    InputLabelProps={{ shrink: true }}
+                />
 
-                    <FormControl>
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={enableGrading}
-                                    onChange={handleGradingSwitch}
-                                />
-                            }
-                            label="Enable Grading"
+                <FormControl>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={enableGrading}
+                                onChange={handleGradingSwitch}
+                            />
+                        }
+                        label="Enable Grading"
+                    />
+                </FormControl>
+
+                {enableGrading && (
+                    <>
+                        <TextField
+                            sx={{ padding: 1 }}
+                            label="Absent Percentage"
+                            type="number"
+                            variant="outlined"
+                            InputProps={{ endAdornment: <InputAdornment position="end">%</InputAdornment> }}
                         />
-                    </FormControl>
+                        <TextField
+                            sx={{ padding: 1 }}
+                            label="Tardy Percentage"
+                            type="number"
+                            variant="outlined"
+                            InputProps={{ endAdornment: <InputAdornment position="end">%</InputAdornment> }}
+                        />
+                    </>
+                )}
 
-                    {enableGrading && (
-                        <>
-                            <TextField
-                                sx={{ padding: 1 }}
-                                label="Absent Percentage"
-                                type="number"
-                                variant="outlined"
-                                InputProps={{ endAdornment: <InputAdornment position="end">%</InputAdornment> }}
-                            />
-                            <TextField
-                                sx={{ padding: 1 }}
-                                label="Tardy Percentage"
-                                type="number"
-                                variant="outlined"
-                                InputProps={{ endAdornment: <InputAdornment position="end">%</InputAdornment> }}
-                            />
-                        </>
-                    )}
-
-                    <FormGroup>
-                        <FormLabel>Choose additional verification options</FormLabel>
-                        <FormControlLabel
-                            control={
+                <FormGroup>
+                    <FormLabel>Choose additional verification options</FormLabel>
+                    {/* Add margin space between FormLabel and QR code timer input */}
+                    <Box sx={{ mt: 2 }}>
+                        <TextField
+                            sx={{ padding: 1, maxWidth: 200 }}
+                            label="Timer Duration (minutes)"
+                            type="number"
+                            value={qrLinkTimer}
+                            onChange={(e) => {
+                                const newValue = parseInt(e.target.value);
+                                if (newValue >= 1 && newValue <= 60) {
+                                    setQrLinkTimer(newValue);
+                                } else if (newValue < 1) {
+                                    setQrLinkTimer(1);  // Set to min value (1)
+                                } else if (newValue > 60) {
+                                    setQrLinkTimer(60); // Set to max value (60)
+                                }
+                            }}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">Max: 60</InputAdornment>,
+                            }}
+                            inputProps={{
+                                min: 1,   // Minimum value
+                                max: 60,  // Maximum value
+                            }}
+                            variant="outlined"
+                            size="small"
+                        />
+                    </Box>
+                    <FormControlLabel control={<Checkbox />} label="Entry Slip" />
+                    <FormControlLabel control={<Checkbox />} label="Exit Slip" />
+                    <FormControlLabel
+                        control={
                             <Checkbox
-                                checked={qrLinkTimerEnabled}
-                                onChange={(e) => setQrLinkTimerEnabled(e.target.checked)}
+                                checked={geolocationEnabled}
+                                onChange={handleGeolocationToggle}
                             />
-                            }
-                            label="QR Code/Link Timer (default 2 minutes)"
-                        />
-                        {qrLinkTimerEnabled && (
-                            <TextField
-                                sx={{ padding: 1, maxWidth: 200 }}
-                                label="Timer Duration (minutes)"
-                                type="number"
-                                value={qrLinkTimer}
-                                onChange={(e) => {
-                                    const newValue = parseInt(e.target.value);
-                                    if (newValue >= 1 && newValue <= 60) {
-                                        setQrLinkTimer(newValue);
-                                    } else if (newValue < 1) {
-                                        setQrLinkTimer(1);  // Set to min value (1)
-                                    } else if (newValue > 60) {
-                                        setQrLinkTimer(60); // Set to max value (60)
-                                    }
-                                }}
-                                InputProps={{
-                                    endAdornment: <InputAdornment position="end">Max: 60</InputAdornment>,
-                                }}
-                                inputProps={{
-                                    min: 1,   // Minimum value
-                                    max: 60,  // Maximum value
-                                }}
-                                variant="outlined"
-                                size="small"
-                            />
-                        )}
-                        
-                        <FormControlLabel control={<Checkbox />} label="Entry Slip" />
-                        <FormControlLabel control={<Checkbox />} label="Exit Slip" />
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={geolocationEnabled}
-                                    onChange={handleGeolocationToggle}
-                                />
-                            }
-                            label="Geolocation"
-                        />
-                    </FormGroup>
+                        }
+                        label="Geolocation"
+                    />
+                </FormGroup>
 
-                    {geolocationEnabled && (
-                        <Box sx={{ mt: 2 }}>
+                {geolocationEnabled && (
+                    <Box sx={{ mt: 2 }}>
+                        <FormControl fullWidth sx={{ padding: 1 }}>
+                            <InputLabel>Building</InputLabel>
+                            <Select
+                                value={getBuildingCode}
+                                onChange={(e) => setBuildingCode(e.target.value)}
+                                label="Building"
+                            >
+                                <MenuItem value="ch">Cambell Hall</MenuItem>
+                                <MenuItem value="uh">University Hall</MenuItem>
+                                <MenuItem value="hhb">Heritage Hall</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                        {(getBuildingCode === 'uh' || getBuildingCode === 'ch' || getBuildingCode === 'hhb') && (
                             <FormControl fullWidth sx={{ padding: 1 }}>
-                                <InputLabel>Building</InputLabel>
+                                <InputLabel>Room</InputLabel>
                                 <Select
-                                    value={getBuildingCode}
-                                    onChange={(e) => setBuildingCode(e.target.value)}
-                                    label="Building"
+                                    value={getRoomNumber}
+                                    onChange={(e) => setRoomNumber(e.target.value)}
+                                    label="Room"
                                 >
-                                    <MenuItem value="ch">Cambell Hall</MenuItem>
-                                    <MenuItem value="uh">University Hall</MenuItem>
-                                    <MenuItem value="hhb">Heritage Hall</MenuItem>
+                                    {getBuildingCode === 'uh' &&
+                                        uhRooms.map((room) => (
+                                            <MenuItem key={room} value={room}>
+                                                {room}
+                                            </MenuItem>
+                                        ))}
+                                    {getBuildingCode === 'ch' &&
+                                        chRooms.map((room) => (
+                                            <MenuItem key={room} value={room}>
+                                                {room}
+                                            </MenuItem>
+                                        ))}
+                                    {getBuildingCode === 'hhb' &&
+                                        hhbRooms.map((room) => (
+                                            <MenuItem key={room} value={room}>
+                                                {room}
+                                            </MenuItem>
+                                        ))}
                                 </Select>
                             </FormControl>
-
-                            {(getBuildingCode === 'uh' || getBuildingCode === 'ch' || getBuildingCode === 'hhb') && (
-                                <FormControl fullWidth sx={{ padding: 1 }}>
-                                    <InputLabel>Room</InputLabel>
-                                    <Select
-                                        value={getRoomNumber}
-                                        onChange={(e) => setRoomNumber(e.target.value)}
-                                        label="Room"
-                                    >
-                                        {getBuildingCode === 'uh' &&
-                                            uhRooms.map((room) => (
-                                                <MenuItem key={room} value={room}>
-                                                    {room}
-                                                </MenuItem>
-                                            ))}
-                                        {getBuildingCode === 'ch' &&
-                                            chRooms.map((room) => (
-                                                <MenuItem key={room} value={room}>
-                                                    {room}
-                                                </MenuItem>
-                                            ))}
-                                        {getBuildingCode === 'hhb' &&
-                                            hhbRooms.map((room) => (
-                                                <MenuItem key={room} value={room}>
-                                                    {room}
-                                                </MenuItem>
-                                            ))}
-                                    </Select>
-                                </FormControl>
-                            )}
-                        </Box>
-                    )}
-
-                    <Box sx={{ mt: 3, display: "flex", justifyContent: "flex-end" }}>
-                        <Button variant="outlined" onClick={onClose} sx={{ mr: 2 }}>
-                            Cancel
-                        </Button>
-                        <Button variant="contained" onClick={handleSave}>
-                            Save Settings
-                        </Button>
+                        )}
                     </Box>
-                </Container>
-            </DialogContent>
-        </Dialog>
+                )}
+
+                <Box sx={{ mt: 3, display: "flex", justifyContent: "flex-end" }}>
+                    <Button variant="outlined" onClick={onClose} sx={{ mr: 2 }}>
+                        Cancel
+                    </Button>
+                    <Button variant="contained" onClick={handleSave}>
+                        Save Settings
+                    </Button>
+                </Box>
+            </Container>
+        </DialogContent>
+    </Dialog>
+
     );
 }
 
