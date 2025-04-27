@@ -13,11 +13,12 @@ type QRCodeEntry = {
 
 const qrCodes = new Map<string, QRCodeEntry>();
 
+
 // Cleanup job to remove expired codes every 5 seconds
 setInterval(() => {
-  const now = Date.now();
+  const now = Date.now(); 
   for (const [key, value] of qrCodes.entries()) {
-    if (now - value.createdAt > value.expireTime) { 
+    if (now - value.createdAt > value.expireTime * 60 * 1000) { 
       qrCodes.delete(key);
     }
   }
@@ -26,13 +27,14 @@ setInterval(() => {
 router.get("/:id", async (req: Request<{ id: string }>, res: Response): Promise<void> => {
   const { id } = req.params;
   const entry = qrCodes.get(id);
-
+  
   if (!entry) {
     res.status(404).json({ valid: false, reason: "Not found or expired" });
     return;
   }
 
-  const expired = Date.now() - entry.createdAt > entry.expireTime * 1000;
+  const expiredTimeConverted = entry.expireTime * 60 * 1000;
+  const expired = Date.now() - entry.createdAt > expiredTimeConverted;
 
   if (expired) {
     console.log(`${id} expired`);
@@ -82,15 +84,13 @@ router.post("/", async (req: Request<{ id: string }>, res: Response): Promise<vo
       return;
     }
     
-    const expire_time = course.timer; 
-    console.log("Expire time:", expire_time);
+    const expire_time = course.timer;
 
     qrCodes.set(id, { createdAt: Date.now(), expireTime: expire_time });
-    console.log("QR code created at:", Date.now(), "Expire time:", expire_time);  // Log the creation time and expiration time
 
-  
+    const expiredTimeConverted = expire_time * 60 * 1000;
     const existingEntry = qrCodes.get(id);
-    if (existingEntry && Date.now() - existingEntry.createdAt > expire_time * 1000) {
+    if (existingEntry && Date.now() - existingEntry.createdAt > expiredTimeConverted) {
       qrCodes.delete(id);
     }
   
