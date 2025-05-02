@@ -9,6 +9,7 @@ router.use(cookieParser());
 type QRCodeEntry = {
   createdAt: number;
   expireTime: number;
+  courseId: string;
 };
 
 const qrCodes = new Map<string, QRCodeEntry>();
@@ -76,7 +77,7 @@ router.post("/", async (req: Request<{ id: string }>, res: Response): Promise<vo
 
     const course = await prisma.course.findFirst({
         where: { canvasUserId: payload.user.id.toString(), id: courseId },
-        select: { timer: true } },
+        select: { timer: true, name: true } },
     );
 
     if (!course) {
@@ -86,7 +87,7 @@ router.post("/", async (req: Request<{ id: string }>, res: Response): Promise<vo
     
     const expire_time = course.timer;
 
-    qrCodes.set(id, { createdAt: Date.now(), expireTime: expire_time });
+    qrCodes.set(id, { createdAt: Date.now(), expireTime: expire_time, courseId: course.name });
 
     const expiredTimeConverted = expire_time * 60 * 1000;
     const existingEntry = qrCodes.get(id);
@@ -94,10 +95,21 @@ router.post("/", async (req: Request<{ id: string }>, res: Response): Promise<vo
       qrCodes.delete(id);
     }
   
-    qrCodes.set(id, { createdAt: Date.now(), expireTime: expire_time });
+    qrCodes.set(id, { createdAt: Date.now(), expireTime: expire_time, courseId: course.name });
     res.status(201).json({ success: true });
 });
 
+
+router.get("/:id/course-title", async (req: Request<{ id: string }>, res: Response): Promise<void> => {
+    const { id } = req.params;
+    const entry = qrCodes.get(id);
   
+    if (!entry) {
+      res.status(404).json({ success: false, message: "QR code not found or expired" });
+      return;
+    }
+  
+    res.json({ success: true, name: entry.courseId });
+});  
 
 export default router;
