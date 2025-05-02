@@ -4,25 +4,27 @@ import { CheckinButton, qrcvalidation } from './checkin';
 import { Box, Typography, Container } from "@mui/material";
 
 const Page = () => {
-    const { isValid, isMounted, role } = qrcvalidation();
+    const { isValid, isMounted, role, courseTitle } = qrcvalidation();
 
     if (!isMounted) return null;
 
     return (
         <>
             {role === "Instructor" && (
-                <Typography
-                    variant="h6"
-                    sx={{
-                        textAlign: "center",
-                        bgcolor: "success.main",
-                        color: "black",
-                        py: 2,
-                        fontWeight: "bold",
-                    }}
-                >
-                    Student View
-                </Typography>
+                <>
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            textAlign: "center",
+                            bgcolor: "success.main",
+                            color: "black",
+                            py: 2,
+                            fontWeight: "bold",
+                        }}
+                    >
+                        Student View
+                    </Typography>
+                </>
             )}
     
             <Container maxWidth="lg" sx={{ mt: 4 }}>
@@ -37,7 +39,7 @@ const Page = () => {
                 >
                     Checking in
                 </Typography>
-    
+
                 <Typography
                     variant="body1"
                     sx={{
@@ -46,9 +48,9 @@ const Page = () => {
                         color: "black",
                     }}
                 >
-                    SP2025 CS 499-1C/499L-Q21 CSA 4990qC/499L-Q2/499L-Q21 Senior BS/BSA Capstone
+                    {courseTitle || "No course available"}
                 </Typography>
-    
+
                 <Box display="flex" justifyContent="center" sx={{ marginBottom: 4 }}>
                     <Display isValid={isValid} />
                 </Box>
@@ -61,7 +63,7 @@ const Page = () => {
                         color: "black",
                     }}
                 >
-                    Ensure you are in the correct classroom for your current session. Location access will be required.
+                    Ensure you are in the correct classroom for your current session. Location access may be required.
                 </Typography>
             </Container>
         </>
@@ -70,13 +72,11 @@ const Page = () => {
 
 export const Display = ({ isValid }: { isValid: boolean }) => {
   return (
-    <Container maxWidth="lg" sx={{ bgcolor: "white", pt: 4}}>
+    <Container maxWidth="lg" sx={{ bgcolor: "white", pt: 4 }}>
       {isValid ? (
-        <>
         <Box display="flex" justifyContent="center">
           <CheckinButton />
         </Box>
-        </>
       ) : (
         <Typography
           variant="h6"

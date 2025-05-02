@@ -3,10 +3,16 @@ import { Box, Button, Container, Typography } from "@mui/material";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
+interface Course {
+    id: string;
+    name: string;
+  }
+
 export const CheckinButton = () => {
     const [location, setLocation] = useState<string | null>(null);
     const [isInside, setIsInside] = useState<boolean | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    
 
     const getLocation = () => {
         if (navigator.geolocation && !isLoading) {
@@ -20,9 +26,7 @@ export const CheckinButton = () => {
                     setLocation(`Latitude: ${lat}, Longitude: ${lon}`);
                     
                     
-                    const response = await fetch(
-                        `${API_BASE_URL}/api/v1/socket/check-location`,
-                        {
+                    const response = await fetch(`${API_BASE_URL}/api/v1/socket/check-location`, {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json",
@@ -107,6 +111,7 @@ export const qrcvalidation = () => {
     const [isValid, setIsValid] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
     const [role, setRole] = useState<string | null>(null);
+    const [courseTitle, setCourseTitle] = useState<string>("");
 
     // Sets the mounted value for the URL to true to test for validity
     useEffect(() => {
@@ -132,10 +137,43 @@ export const qrcvalidation = () => {
             });
     
             const data = await response.json();
-
+            console.log(data);
             setRole(data.role);
 
-            if (data.role === "Instructor") {return;} else {
+            try {
+                const courseRes = await fetch(`${API_BASE_URL}/api/v1/qr/${id}/course-title`, {
+                    method: "GET",
+                    credentials: "include",
+                });
+
+                const courseData = await courseRes.json();
+                setCourseTitle(courseData.name || "Unable to Get Course");
+            } catch (err) {
+                console.error("Error fetching course title:", err);
+            }
+
+            
+            const fetchInstructorCourse = async () => {
+                try {
+                    const courseResponse = await fetch(`${API_BASE_URL}/api/v1/courses`, {
+                        credentials: "include",
+                    });
+            
+                    if (courseResponse.ok) {
+                        const coursesData: Course[] = await courseResponse.json();
+                        if (coursesData.length > 0) {
+                            setCourseTitle(coursesData[0].name);
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error fetching instructor's course:", error);
+                }
+            };
+            
+            if (data.role === "Instructor") {
+                fetchInstructorCourse();
+            
+            } else {
 
                 if (id) {
                     window.sessionStorage.setItem("checkinId", id);
@@ -162,8 +200,6 @@ export const qrcvalidation = () => {
         };
         checkQRAndID();
     }, [isMounted]);
-    
-    
 
-    return { isValid, isMounted, role };
+    return { isValid, isMounted, role, courseTitle };
 };
