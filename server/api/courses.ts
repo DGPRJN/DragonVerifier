@@ -103,7 +103,12 @@ router.get("/:courseId", async (req, res): Promise<void> => {
                 instructor: true,
                 attendance: true, 
                 datesArray: true, 
-                schedule:true,
+                schedule: true,
+                enableGrading: true,
+                entrySlip: true,
+                exitSlip: true,
+                timer: true,
+                geolocationEnabled: true,
             },
         });
 

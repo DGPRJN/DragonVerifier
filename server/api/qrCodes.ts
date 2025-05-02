@@ -108,6 +108,8 @@ router.get("/:id/course-title", async (req: Request<{ id: string }>, res: Respon
       res.status(404).json({ success: false, message: "QR code not found or expired" });
       return;
     }
+
+    console.log(entry.courseId);
   
     res.json({ success: true, name: entry.courseId });
 });  
