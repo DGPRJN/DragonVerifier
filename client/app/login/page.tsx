@@ -67,19 +67,6 @@ const Page = () => {
                     Checking in
                 </Typography>
 
-                {/* Class name */}
-                <Typography
-                    variant="body1"
-                    sx={{
-                        textAlign: "center",
-                        marginBottom: 4,
-                        color: "black",
-                    }}
-                >
-                    SP2025 CS 499-1C/499L-Q21 CSA 4990qC/499L-Q2/499L-Q21 Senior
-                    BS/BSA Capstone
-                </Typography>
-
                 {/* Login Button */}
                 <Box
                     display="flex"
@@ -104,7 +91,7 @@ const Page = () => {
                     }}
                 >
                     Ensure you are in the correct classroom for your current
-                    session. Location access will be required.
+                    session. Location access may be required.
                 </Typography>
             </Container>
         </>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     InputAdornment, Box, Container, Switch, FormControlLabel,
     FormGroup, Checkbox, FormControl, FormLabel, TextField,
@@ -13,6 +13,7 @@ function Course_Settings({ open, onClose, courseId }) {
     const [getBuildingCode, setBuildingCode] = useState('');
     const [getRoomNumber, setRoomNumber] = useState('');
     const [qrLinkTimer, setQrLinkTimer] = useState(2);
+    const [loading, setLoading] = useState(true);
 
     // Define room numbers for University Hall (uh)
     const uhRooms = [
@@ -33,6 +34,37 @@ function Course_Settings({ open, onClose, courseId }) {
         '524', '526', '536', '549'
     ];
 
+    useEffect(() => {
+        const fetchCourseSettings = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/v1/courses/${courseId}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const course = data;
+                    setEnableGrading(course.enableGrading || false);
+                    setGeolocationEnabled(course.geolocationEnabled || false);
+                    setQrLinkTimer(course.timer || 2);
+                    if (course.location) {
+                        setBuildingCode(course.location.buildingCode || '');
+                        setRoomNumber(course.location.roomNumber || '');
+                    }
+                } else {
+                    console.error("Failed to fetch course settings:", data.error);
+                }
+            } catch (error) {
+                console.error("Error fetching course settings:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (open) {
+            setLoading(true);
+            fetchCourseSettings();
+        }
+    }, [open, courseId]);
+
     const handleGradingSwitch = (event) => setEnableGrading(event.target.checked);
     const handleGeolocationToggle = (event) => setGeolocationEnabled(event.target.checked);
 
@@ -42,7 +74,7 @@ function Course_Settings({ open, onClose, courseId }) {
             enableGrading,
             buildingCode: geolocationEnabled ? getBuildingCode : null,
             roomNumber: geolocationEnabled ? getRoomNumber : null,
-            qrLinkTimer: qrLinkTimer ?? undefined,
+            qrLinkTimer: qrLinkTimer,
         };
         try {
             const res = await fetch(`${API_BASE_URL}/api/v1/courses/${courseId}/settings`, {
