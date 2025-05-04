@@ -93,7 +93,7 @@ const GenerateQRCode = () => {
     }
 
     if (expireTime !== null) {
-      setTimeLeft(expireTime / 10000);
+      setTimeLeft(expireTime * 60);
 
       timerRef.current = setInterval(() => {
         setTimeLeft((prev) => {
